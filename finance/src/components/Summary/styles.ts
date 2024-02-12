@@ -26,14 +26,12 @@ export const SummaryCard = styled.div<SummaryCardProps>`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: ${(props) => props.theme['gray-300']};
   }
 
   strong {
     display: block;
     margin-top: 1rem;
     font-size: 2rem;
-    color: ${(props) => props.theme['gray-300']};
   }
 
   ${(props) =>
