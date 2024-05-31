@@ -3,7 +3,6 @@ import { defaultTheme } from '../styles/themes/default'
 
 type ThemeType = typeof defaultTheme
 
-declare module 'styled-components'{
-    export type defaultTheme = ThemeType
+declare module 'styled-components' {
+  export type defaultTheme = ThemeType
 }
-

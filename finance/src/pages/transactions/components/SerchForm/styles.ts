@@ -42,3 +42,20 @@ export const ButtonSearch = styled.button`
     cursor: pointer;
   }
 `
+
+export const Select = styled.select`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 0;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  color: ${(props) => props.theme['green-300']};
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  option {
+    color: ${(props) => props.theme['gray-700']};
+  }
+`
