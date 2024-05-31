@@ -8,6 +8,7 @@ import {
   TransactionsContainer,
   TransactionsTable,
 } from './style'
+import { formatPrice } from '../../format/price'
 
 interface TransactionsProps {
   id: string
@@ -77,7 +78,7 @@ export function Transactions() {
                       <PriceHighLight
                         variant={transaction.status || (() => selectedStatus)}
                       >
-                        R$ {transaction.preco}
+                        R$ {formatPrice(parseFloat(transaction.preco))}
                       </PriceHighLight>
                     </td>
                     <td>
