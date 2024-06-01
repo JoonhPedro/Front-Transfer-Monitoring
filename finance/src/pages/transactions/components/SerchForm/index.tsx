@@ -1,6 +1,6 @@
 import { MagnifyingGlass } from 'phosphor-react'
-import { ButtonSearch, SeachFormContainer, Select } from './styles'
 import { useState } from 'react'
+import { ButtonSearch, SeachFormContainer, Select } from './styles'
 
 interface SearchFormProps {
   onSearch: (searchTerm: string) => void

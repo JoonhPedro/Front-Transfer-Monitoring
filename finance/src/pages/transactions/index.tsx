@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react'
 import { Header } from '../../components/Header'
 import { Summary } from '../../components/Summary'
-import { SearchForm } from './components/SerchForm'
+import { formatPrice } from '../../format/price'
 import { api } from '../../services/api'
+import { SearchForm } from './components/SerchForm'
 import {
   PriceHighLight,
   TransactionsContainer,
   TransactionsTable,
 } from './style'
-import { formatPrice } from '../../format/price'
 
 interface TransactionsProps {
   id: string
   name: string
   categoria: string
   preco: string
+  metodo: string
   status: 'income' | 'outcome'
   created_at: string
   updated_at: string
@@ -73,7 +74,8 @@ export function Transactions() {
               <>
                 {filteredTransactions.map((transaction) => (
                   <tr key={transaction.id}>
-                    <td width="50%">{transaction.name}</td>
+                    <td width="30%">{transaction.name}</td>
+                    <td>{transaction.metodo}</td>
                     <td>
                       <PriceHighLight
                         variant={transaction.status || (() => selectedStatus)}
@@ -84,7 +86,7 @@ export function Transactions() {
                     <td>
                       <p>{transaction.categoria}</p>
                     </td>
-                    <td>
+                    <td width="10%">
                       {new Intl.DateTimeFormat('pt-BR').format(
                         new Date(transaction.created_at),
                       )}

@@ -47,7 +47,6 @@ export const Select = styled.select`
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  border: 0;
   padding: 1rem;
   background: transparent;
   border: none;
@@ -55,7 +54,19 @@ export const Select = styled.select`
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  &:focus {
+    border-color: ${(props) => props.theme['green-500']};
+    outline: none;
+  }
   option {
     color: ${(props) => props.theme['gray-700']};
+    padding: 1rem;
   }
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><path d="M6 9l6 6 6-6"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
 `

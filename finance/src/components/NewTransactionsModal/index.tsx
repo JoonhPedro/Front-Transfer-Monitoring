@@ -1,14 +1,15 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react'
+import { useRef, useState } from 'react'
+import { api } from '../../services/api'
 import {
   CloseButton,
   Content,
   Overlay,
+  Select,
   TransactionType,
   TransactionTypeButton,
 } from './styles'
-import { useRef, useState } from 'react'
-import { api } from '../../services/api'
 
 interface TransactionsProps {
   id: string
@@ -25,24 +26,29 @@ export function NewTransactionsModal() {
   const nameRef = useRef<HTMLInputElement | null>(null)
   const categoriaRef = useRef<HTMLInputElement | null>(null)
   const precoRef = useRef<HTMLInputElement | null>(null)
+  const metodoRef = useRef<HTMLSelectElement | null>(null)
   const [status, setStatus] = useState<string>('income')
+
   async function handleSubmit() {
     if (
       !nameRef.current?.value ||
       !categoriaRef.current?.value ||
-      !precoRef.current?.value
+      !precoRef.current?.value ||
+      !metodoRef.current?.value
     )
       return
+
     try {
       const response = await api.post('/transactions', {
-        name: nameRef.current?.value,
-        categoria: categoriaRef.current?.value,
-        preco: precoRef.current?.value,
+        name: nameRef.current.value,
+        categoria: categoriaRef.current.value,
+        preco: precoRef.current.value,
+        metodo: metodoRef.current.value,
         status,
       })
       setTransactions([...transactions, response.data])
     } catch (err) {
-      return err
+      console.error('Failed to create transaction:', err)
     }
   }
 
@@ -67,6 +73,14 @@ export function NewTransactionsModal() {
             required
             ref={categoriaRef}
           />
+          <Select ref={metodoRef} defaultValue="" required>
+            <option value="" disabled>
+              Selecione um método
+            </option>
+            <option value="PIX">PIX</option>
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="Cartao de credito">Cartão de crédito</option>
+          </Select>
           <TransactionType>
             <TransactionTypeButton
               variant="income"

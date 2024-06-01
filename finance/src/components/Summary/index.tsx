@@ -1,8 +1,8 @@
 import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from 'phosphor-react'
-import { SummaryCard, SummaryContainer } from './styles'
-import { useState, useEffect } from 'react'
-import { api } from '../../services/api'
+import { useEffect, useState } from 'react'
 import { formatPrice } from '../../format/price'
+import { api } from '../../services/api'
+import { SummaryCard, SummaryContainer } from './styles'
 
 interface TransactionsProps {
   id: string
@@ -37,19 +37,18 @@ export function Summary() {
   }
 
   function calculateSaidas(): number {
-    return (
-      transactions
-        .filter((transaction) => transaction.status === 'outcome')
-        .reduce(
-          (total, transaction) => total + parseFloat(transaction.preco),
-          0,
-        ) * -1
-    )
+    return transactions
+      .filter((transaction) => transaction.status === 'outcome')
+      .reduce((total, transaction) => total + parseFloat(transaction.preco), 0)
   }
 
   const entrada = calculateEntradas()
   const saida = calculateSaidas()
-  const total = entrada + saida
+  const total = entrada - saida
+
+  function getVariant(): 'green' | 'red' {
+    return total >= 0 ? 'green' : 'red'
+  }
 
   return (
     <SummaryContainer>
@@ -58,7 +57,7 @@ export function Summary() {
           <span>Entradas</span>
           <ArrowCircleUp size={32} color="#00b37e" />
         </header>
-        <strong> R$ {formatPrice(entrada)}</strong>
+        <strong>R$ {formatPrice(entrada)}</strong>
       </SummaryCard>
       <SummaryCard>
         <header>
@@ -67,7 +66,7 @@ export function Summary() {
         </header>
         <strong>R$ {formatPrice(saida)}</strong>
       </SummaryCard>
-      <SummaryCard variant="green">
+      <SummaryCard variant={getVariant()}>
         <header>
           <span>Total</span>
           <CurrencyDollar size={32} color="#fff" />
