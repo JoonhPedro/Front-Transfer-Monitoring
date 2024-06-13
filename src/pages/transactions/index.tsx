@@ -80,7 +80,8 @@ export function Transactions() {
                       <PriceHighLight
                         variant={transaction.status || (() => selectedStatus)}
                       >
-                        R$ {formatPrice(parseFloat(transaction.preco))}
+                        R$ {transaction.status === 'outcome' ? '- ' : ''}
+                        {formatPrice(parseFloat(transaction.preco))}{' '}
                       </PriceHighLight>
                     </td>
                     <td>
