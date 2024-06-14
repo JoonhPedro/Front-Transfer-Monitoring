@@ -1,5 +1,5 @@
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: 'https://api-money-smqa.onrender.com/',
+  baseURL: 'https://api-money-1.onrender.com/',
 })
