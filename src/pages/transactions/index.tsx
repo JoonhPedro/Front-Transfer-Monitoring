@@ -165,7 +165,7 @@ export function Transactions() {
                                     new Date(transaction.created_at),
                                   )}
                                 </Td>
-                                <Tooltip src={transaction.file}>
+                                <Tooltip>
                                   <WrapItem>
                                     <Avatar
                                       name="teste"
