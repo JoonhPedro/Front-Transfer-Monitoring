@@ -30,21 +30,21 @@ export function Summary() {
     }
   }
 
-  function calculateEntradas(): number {
+  function calculateInputs(): number {
     return transactions
       .filter((transaction) => transaction.status === 'income')
       .reduce((total, transaction) => total + parseFloat(transaction.preco), 0)
   }
 
-  function calculateSaidas(): number {
+  function calculateOutputs(): number {
     return transactions
       .filter((transaction) => transaction.status === 'outcome')
       .reduce((total, transaction) => total + parseFloat(transaction.preco), 0)
   }
 
-  const entrada = calculateEntradas()
-  const saida = calculateSaidas()
-  const total = entrada - saida
+  const input = calculateInputs()
+  const output = calculateOutputs()
+  const total = input - output
 
   function getVariant(): 'green' | 'red' {
     return total >= 0 ? 'green' : 'red'
@@ -57,14 +57,14 @@ export function Summary() {
           <span>Entradas</span>
           <ArrowCircleUp size={32} color="#00b37e" />
         </header>
-        <strong>R$ {formatPrice(entrada)}</strong>
+        <strong>R$ {formatPrice(input)}</strong>
       </SummaryCard>
       <SummaryCard>
         <header>
           <span>Saídas</span>
           <ArrowCircleDown size={32} color="#f75a68" />
         </header>
-        <strong>R$ {formatPrice(saida)}</strong>
+        <strong>R$ {formatPrice(output)}</strong>
       </SummaryCard>
       <SummaryCard variant={getVariant()}>
         <header>

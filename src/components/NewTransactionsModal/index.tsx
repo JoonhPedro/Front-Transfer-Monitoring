@@ -10,7 +10,7 @@ import {
   TransactionType,
   TransactionTypeButton,
 } from './styles'
-import { Spinner } from '@chakra-ui/react'
+import { Spinner, useToast } from '@chakra-ui/react'
 
 interface TransactionsProps {
   id: string
@@ -27,12 +27,15 @@ export function NewTransactionsModal() {
   const nameRef = useRef<HTMLInputElement | null>(null)
   const categoriaRef = useRef<HTMLInputElement | null>(null)
   const precoRef = useRef<HTMLInputElement | null>(null)
+  const file = useRef<HTMLInputElement | null>(null)
   const metodoRef = useRef<HTMLSelectElement | null>(null)
   const [status, setStatus] = useState<string>('income')
   const [loading, setLoading] = useState(false)
+  const toast = useToast()
 
-  async function handleSubmit() {
-    window.location.reload()
+  const { error } = console
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
     if (
       !nameRef.current?.value ||
       !categoriaRef.current?.value ||
@@ -48,11 +51,28 @@ export function NewTransactionsModal() {
         categoria: categoriaRef.current.value,
         preco: precoRef.current.value,
         metodo: metodoRef.current.value,
+        file: file.current?.value,
         status,
       })
       setTransactions([...transactions, response.data])
+      toast({
+        title: 'Transação Realizada com Sucesso.',
+        status: 'success',
+        duration: 1500,
+        isClosable: true,
+        position: 'top-right',
+      })
+      location.reload()
     } catch (err) {
-      console.log('Failed to create transaction:', err)
+      toast({
+        title: 'Error.',
+        description: 'Ocorreu um erro ao tentar cadastrar o transactions.',
+        status: 'error',
+        duration: 1500,
+        isClosable: true,
+        position: 'top-right',
+      })
+      error('Failed to create transaction:', err)
     } finally {
       setLoading(false)
     }
@@ -66,7 +86,7 @@ export function NewTransactionsModal() {
     <Dialog.Portal>
       <Overlay />
       <Content>
-        <Dialog.Title> Nova Transação</Dialog.Title>
+        <Dialog.Title> Nova Transação </Dialog.Title>
         <CloseButton>
           <X size={24} />
         </CloseButton>
@@ -101,13 +121,19 @@ export function NewTransactionsModal() {
                 required
                 ref={categoriaRef}
               />
+              <input
+                type="url"
+                placeholder="Envie Arquivo de Comprovante de transferencia"
+                ref={file}
+              />
               <Select ref={metodoRef} defaultValue="" required>
                 <option value="" disabled>
                   Selecione um método
                 </option>
-                <option value="PIX">PIX</option>
                 <option value="Dinheiro">Dinheiro</option>
+                <option value="Pix">PIX</option>
                 <option value="Cartao de credito">Cartão de crédito</option>
+                <option value="Cartão Debito">Cartão Debito</option>
               </Select>
               <TransactionType>
                 <TransactionTypeButton

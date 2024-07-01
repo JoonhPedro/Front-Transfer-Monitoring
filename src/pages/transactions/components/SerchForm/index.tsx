@@ -1,5 +1,5 @@
 import { MagnifyingGlass } from 'phosphor-react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { ButtonSearch, SeachFormContainer, Select } from './styles'
 import { Spinner } from '@chakra-ui/react'
 
@@ -13,10 +13,10 @@ export function SearchForm({ onSearch, setSelectedStatus }: SearchFormProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setLoading(true)
-      setSearchTerm(event.target.value)
+      setSearchTerm(e.target.value)
     } catch (err) {
       return (err as Error).message
     } finally {
@@ -24,10 +24,10 @@ export function SearchForm({ onSearch, setSelectedStatus }: SearchFormProps) {
     }
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
       setLoading(true)
-      event.preventDefault()
       onSearch(searchTerm)
     } catch (err) {
       return (err as Error).message
@@ -36,10 +36,10 @@ export function SearchForm({ onSearch, setSelectedStatus }: SearchFormProps) {
     }
   }
 
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     try {
       setLoading(true)
-      setSelectedStatus(event.target.value)
+      setSelectedStatus(e.target.value)
     } catch (err) {
       return (err as Error).message
     } finally {
