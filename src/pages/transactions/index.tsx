@@ -204,6 +204,7 @@ export function Transactions() {
                                         <Tooltip.Content
                                           className="TooltipContent"
                                           sideOffset={10}
+                                          side="right"
                                         >
                                           Download PDF
                                         </Tooltip.Content>
