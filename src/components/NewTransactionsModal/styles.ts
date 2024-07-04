@@ -52,10 +52,13 @@ export const Content = styled(Dialog.Content)`
       cursor: pointer;
 
       &:hover {
-        color: ${(props) => props.theme['green-700']};
+        background: ${(props) => props.theme['green-700']};
         transition: background-color 0.2s;
       }
     }
+  }
+  Link {
+    text-align: center;
   }
 `
 export const CloseButton = styled(Dialog.Close)`
@@ -68,6 +71,7 @@ export const CloseButton = styled(Dialog.Close)`
   cursor: pointer;
   color: ${(props) => props.theme['gray-500']};
 `
+
 export const TransactionType = styled(RadioGroup.Root)`
   display: grid;
   grid-template-columns: repeat(2, 1fr);

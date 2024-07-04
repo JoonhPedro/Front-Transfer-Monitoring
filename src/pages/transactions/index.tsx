@@ -1,15 +1,5 @@
 import { useEffect, useState } from 'react'
-import {
-  Avatar,
-  Spinner,
-  Table,
-  Td,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-  WrapItem,
-} from '@chakra-ui/react'
+import { Spinner, Table, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import { Header } from '../../components/Header'
 import { Summary } from '../../components/Summary'
 import { formatPrice } from '../../format/price'
@@ -21,6 +11,9 @@ import {
   TransactionsContainer,
   TransactionsTable,
 } from './style'
+import jsPDF from 'jspdf'
+import { Download } from 'phosphor-react'
+import * as Tooltip from '@radix-ui/react-tooltip'
 
 interface TransactionsProps {
   id: string
@@ -90,6 +83,33 @@ export function Transactions() {
     }
   }
 
+  function handlePdf(id: string) {
+    const doc = new jsPDF('p', 'pt')
+    const stats = (item: { status: string }) =>
+      item?.status ? `saida` : `entrada`
+    transactions.find(
+      (item) =>
+        item.id === id &&
+        (doc.text(`Nome da Transferencia: ` + item.name, 10, 40),
+        doc.text(`Categoria: ` + item.categoria, 10, 80),
+        doc.text(
+          `Valor: ` + `R$ ` + formatPrice(parseFloat(item.preco)),
+          10,
+          120,
+        ),
+        doc.text(`Metodo de pagamento: ` + item.metodo, 10, 160),
+        doc.text(`Status: ` + stats(item), 10, 200),
+        doc.text(
+          `Data de Transferencia: ` +
+            new Intl.DateTimeFormat('pt-BR').format(new Date(item.created_at)),
+          10,
+          240,
+        ),
+        doc.text(`Observações: ` + item.file, 10, 280),
+        doc.save(`Transferencia_` + item.name + `.pdf`)),
+    )
+  }
+
   return (
     <div>
       <Header />
@@ -102,7 +122,7 @@ export function Transactions() {
         />
         <TransactionsTable>
           {loading ? (
-            <>
+            <NoData>
               <Spinner
                 thickness="4px"
                 speed="0.65s"
@@ -110,7 +130,7 @@ export function Transactions() {
                 color="blue.500"
                 size="xl"
               />
-            </>
+            </NoData>
           ) : (
             <Table variant={'gray'}>
               <>
@@ -123,6 +143,7 @@ export function Transactions() {
                         <Th>Preço</Th>
                         <Th>Status</Th>
                         <Th isNumeric>Data</Th>
+                        <Th>Ações</Th>
                       </Tr>
                     </Thead>
                     <tbody>
@@ -141,8 +162,8 @@ export function Transactions() {
                           <>
                             {filteredTransactions.map((transaction) => (
                               <Tr key={transaction.id}>
-                                <Td width="30%">{transaction.name}</Td>
-                                <Td>{transaction.metodo}</Td>
+                                <Td width="20%">{transaction.name || ''}</Td>
+                                <Td>{transaction.metodo || ''}</Td>
                                 <Td>
                                   <PriceHighLight
                                     variant={
@@ -152,9 +173,11 @@ export function Transactions() {
                                   >
                                     R$
                                     {transaction.status === 'outcome'
-                                      ? '- '
-                                      : ''}
-                                    {formatPrice(parseFloat(transaction.preco))}
+                                      ? ' -'
+                                      : ' '}
+                                    {formatPrice(
+                                      parseFloat(transaction.preco || ''),
+                                    )}
                                   </PriceHighLight>
                                 </Td>
                                 <Td>
@@ -162,17 +185,32 @@ export function Transactions() {
                                 </Td>
                                 <Td width="10%">
                                   {new Intl.DateTimeFormat('pt-BR').format(
-                                    new Date(transaction.created_at),
+                                    new Date(transaction.created_at || ''),
                                   )}
                                 </Td>
-                                <Tooltip>
-                                  <WrapItem>
-                                    <Avatar
-                                      name="teste"
-                                      src={transaction.file}
-                                    />
-                                  </WrapItem>
-                                </Tooltip>
+                                <Td>
+                                  <Tooltip.Provider>
+                                    <Tooltip.Root>
+                                      <Tooltip.Trigger asChild>
+                                        <button
+                                          onClick={() =>
+                                            handlePdf(transaction.id)
+                                          }
+                                        >
+                                          <Download />
+                                        </button>
+                                      </Tooltip.Trigger>
+                                      <Tooltip.Portal>
+                                        <Tooltip.Content
+                                          className="TooltipContent"
+                                          sideOffset={10}
+                                        >
+                                          Download PDF
+                                        </Tooltip.Content>
+                                      </Tooltip.Portal>
+                                    </Tooltip.Root>
+                                  </Tooltip.Provider>
+                                </Td>
                               </Tr>
                             ))}
                           </>
@@ -182,7 +220,7 @@ export function Transactions() {
                   </>
                 ) : (
                   <>
-                    <NoData>Sem transacoes</NoData>
+                    <NoData>Sem transações</NoData>
                   </>
                 )}
               </>

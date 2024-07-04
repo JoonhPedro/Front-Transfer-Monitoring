@@ -16,9 +16,9 @@ export const TransactionsTable = styled.table`
     padding: 1.25rem 2rem;
     background: ${(props) => props.theme['gray-700']};
     color: ${(props) => props.theme['gray-300']};
-
+    border-bottom: 1px solid ${(props) => props.theme['gray-600']};
     &:first-child {
-      border-bottom-left-radius: 6px;
+      border-bottom-left-radius: 5px;
     }
     &:last-child {
       border-bottom-left-radius: 0px;

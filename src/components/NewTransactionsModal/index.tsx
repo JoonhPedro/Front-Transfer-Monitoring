@@ -10,13 +10,15 @@ import {
   TransactionType,
   TransactionTypeButton,
 } from './styles'
-import { Spinner, useToast } from '@chakra-ui/react'
+import { Checkbox, Link, Spinner, useToast } from '@chakra-ui/react'
+import { NewTermUser } from '../NewTermUser'
 
 interface TransactionsProps {
   id: string
   name: string
   categoria: string
   preco: string
+  metodo: string
   status: string
   created_at: string
   updated_at: string
@@ -27,10 +29,11 @@ export function NewTransactionsModal() {
   const nameRef = useRef<HTMLInputElement | null>(null)
   const categoriaRef = useRef<HTMLInputElement | null>(null)
   const precoRef = useRef<HTMLInputElement | null>(null)
-  const file = useRef<HTMLInputElement | null>(null)
+  const fileRef = useRef<HTMLInputElement | null>(null)
   const metodoRef = useRef<HTMLSelectElement | null>(null)
   const [status, setStatus] = useState<string>('income')
   const [loading, setLoading] = useState(false)
+  const [showOtherInput, setShowOtherInput] = useState(false)
   const toast = useToast()
 
   const { error } = console
@@ -51,7 +54,7 @@ export function NewTransactionsModal() {
         categoria: categoriaRef.current.value,
         preco: precoRef.current.value,
         metodo: metodoRef.current.value,
-        file: file.current?.value,
+        file: fileRef.current?.value,
         status,
       })
       setTransactions([...transactions, response.data])
@@ -62,11 +65,10 @@ export function NewTransactionsModal() {
         isClosable: true,
         position: 'top-right',
       })
-      location.reload()
     } catch (err) {
       toast({
-        title: 'Error.',
-        description: 'Ocorreu um erro ao tentar cadastrar o transactions.',
+        title: 'Erro.',
+        description: 'Ocorreu um erro ao tentar cadastrar a transação.',
         status: 'error',
         duration: 1500,
         isClosable: true,
@@ -76,10 +78,20 @@ export function NewTransactionsModal() {
     } finally {
       setLoading(false)
     }
+    location.reload()
   }
 
   function handleStatusChange(selectedStatus: string) {
     setStatus(selectedStatus)
+  }
+
+  function handleSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const selectedValue = e.target.value
+    if (selectedValue === 'text') {
+      setShowOtherInput(true)
+    } else {
+      setShowOtherInput(false)
+    }
   }
 
   return (
@@ -121,12 +133,13 @@ export function NewTransactionsModal() {
                 required
                 ref={categoriaRef}
               />
-              <input
-                type="url"
-                placeholder="Envie Arquivo de Comprovante de transferencia"
-                ref={file}
-              />
-              <Select ref={metodoRef} defaultValue="" required>
+              <input type="text" placeholder="Observações" ref={fileRef} />
+              <Select
+                ref={metodoRef}
+                defaultValue=""
+                required
+                onChange={handleSelectChange}
+              >
                 <option value="" disabled>
                   Selecione um método
                 </option>
@@ -134,7 +147,11 @@ export function NewTransactionsModal() {
                 <option value="Pix">PIX</option>
                 <option value="Cartao de credito">Cartão de crédito</option>
                 <option value="Cartão Debito">Cartão Debito</option>
+                <option value="text">Outros</option>
               </Select>
+              {showOtherInput && (
+                <input type="text" placeholder="Digite aqui outro método" />
+              )}
               <TransactionType>
                 <TransactionTypeButton
                   variant="income"
@@ -154,6 +171,15 @@ export function NewTransactionsModal() {
                 </TransactionTypeButton>
               </TransactionType>
               <button type="submit">Cadastrar</button>
+              <Checkbox required>
+                <p>Li e estou de acordo com a Política de Privacidade</p>
+              </Checkbox>
+              <Dialog.Root>
+                <Dialog.Trigger asChild>
+                  <Link>Política de Privacidade</Link>
+                </Dialog.Trigger>
+                <NewTermUser />
+              </Dialog.Root>
             </form>
           </>
         )}
