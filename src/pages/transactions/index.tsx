@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Spinner, Table, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { Spinner, Table, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react'
 import { Header } from '../../components/Header'
 import { Summary } from '../../components/Summary'
 import { formatPrice } from '../../format/price'
@@ -36,7 +36,7 @@ export function Transactions() {
     'income' | 'outcome' | (() => 'income' | 'outcome')
   >()
   const [loading, setLoading] = useState(false)
-
+  const toast = useToast()
   useEffect(() => {
     loadTransactions()
   }, [])
@@ -84,30 +84,39 @@ export function Transactions() {
   }
 
   function handlePdf(id: string) {
+    const transaction = transactions.find((item) => item.id === id)
+
+    if (!transaction) {
+      toast({
+        title: 'transação nao encontrada..',
+        status: 'error',
+        duration: 1500,
+        isClosable: true,
+        position: 'top-right',
+      })
+      return
+    }
+
+    // eslint-disable-next-line new-cap
     const doc = new jsPDF('p', 'pt')
-    const stats = (item: { status: string }) =>
-      item?.status ? `saida` : `entrada`
-    transactions.find(
-      (item) =>
-        item.id === id &&
-        (doc.text(`Nome da Transferencia: ` + item.name, 10, 40),
-        doc.text(`Categoria: ` + item.categoria, 10, 80),
-        doc.text(
-          `Valor: ` + `R$ ` + formatPrice(parseFloat(item.preco)),
-          10,
-          120,
-        ),
-        doc.text(`Metodo de pagamento: ` + item.metodo, 10, 160),
-        doc.text(`Status: ` + stats(item), 10, 200),
-        doc.text(
-          `Data de Transferencia: ` +
-            new Intl.DateTimeFormat('pt-BR').format(new Date(item.created_at)),
-          10,
-          240,
-        ),
-        doc.text(`Observações: ` + item.file, 10, 280),
-        doc.save(`Transferencia_` + item.name + `.pdf`)),
+
+    const getStatusLabel = (status: string) => {
+      return status === 'outcome' ? 'saída' : 'entrada'
+    }
+
+    doc.text(`Nome da Transferência: ${transaction.name}`, 10, 40)
+    doc.text(`Categoria: ${transaction.categoria}`, 10, 80)
+    doc.text(`Valor: R$ ${formatPrice(parseFloat(transaction.preco))}`, 10, 120)
+    doc.text(`Método de Pagamento: ${transaction.metodo}`, 10, 160)
+    doc.text(`Status: ${getStatusLabel(transaction.status)}`, 10, 200)
+    doc.text(
+      `Data de Transferência: ${new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.created_at))}`,
+      10,
+      240,
     )
+    doc.text(`Observações: ${transaction.file}`, 10, 280)
+
+    doc.save(`Transferencia_${transaction.name}.pdf`)
   }
 
   return (

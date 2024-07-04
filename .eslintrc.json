@@ -1,7 +1,6 @@
 {
   "extends": "@rocketseat/eslint-config/react",
-    "rules": {
-      "new-cap": ["error", { "newIsCap": true }]
-    }
-  
+  "rules": {
+    "new-cap": ["error", { "newIsCap": true }]
+  }
 }
