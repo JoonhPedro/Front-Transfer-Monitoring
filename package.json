@@ -20,12 +20,17 @@
     "@radix-ui/react-scroll-area": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "axios": "^1.7.2",
+    "classnames": "^2.5.1",
     "framer-motion": "^11.2.11",
     "jspdf": "^2.5.1",
     "phosphor-react": "^1.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^6.1.8"
+    "react-icons": "^5.2.1",
+    "react-pagination": "^1.0.0",
+    "react-router-dom": "^6.24.1",
+    "styled-components": "^6.1.8",
+    "use-context-selector": "^2.0.0"
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^2.2.2",

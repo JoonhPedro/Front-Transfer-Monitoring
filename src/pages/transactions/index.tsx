@@ -14,6 +14,7 @@ import {
 import jsPDF from 'jspdf'
 import { Download } from 'phosphor-react'
 import * as Tooltip from '@radix-ui/react-tooltip'
+import PaginationComponent from '../../components/Paginations'
 
 interface TransactionsProps {
   id: string
@@ -36,10 +37,16 @@ export function Transactions() {
     'income' | 'outcome' | (() => 'income' | 'outcome')
   >()
   const [loading, setLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
   const toast = useToast()
+
   useEffect(() => {
     loadTransactions()
   }, [])
+
+  useEffect(() => {
+    handlePagination(currentPage)
+  }, [currentPage])
 
   async function loadTransactions() {
     try {
@@ -83,12 +90,16 @@ export function Transactions() {
     }
   }
 
+  const handlePagination = (page: number) => {
+    setCurrentPage(page)
+  }
+
   function handlePdf(id: string) {
     const transaction = transactions.find((item) => item.id === id)
 
     if (!transaction) {
       toast({
-        title: 'transação nao encontrada..',
+        title: 'Transação não encontrada.',
         status: 'error',
         duration: 1500,
         isClosable: true,
@@ -110,7 +121,9 @@ export function Transactions() {
     doc.text(`Método de Pagamento: ${transaction.metodo}`, 10, 160)
     doc.text(`Status: ${getStatusLabel(transaction.status)}`, 10, 200)
     doc.text(
-      `Data de Transferência: ${new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.created_at))}`,
+      `Data de Transferência: ${new Intl.DateTimeFormat('pt-BR').format(
+        new Date(transaction.created_at),
+      )}`,
       10,
       240,
     )
@@ -120,124 +133,106 @@ export function Transactions() {
   }
 
   return (
-    <div>
-      <Header />
-      <Summary />
-      <TransactionsContainer>
-        <SearchForm
-          onSearch={handleSearch}
-          setSelectedStatus={handleSelectedStatusChange}
-          loading={loading}
-        />
-        <TransactionsTable>
-          {loading ? (
-            <NoData>
-              <Spinner
-                thickness="4px"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="blue.500"
-                size="xl"
-              />
-            </NoData>
-          ) : (
-            <Table variant={'gray'}>
+    <>
+      <div>
+        <Header />
+        <Summary />
+        <TransactionsContainer>
+          <SearchForm
+            onSearch={handleSearch}
+            setSelectedStatus={handleSelectedStatusChange}
+            loading={loading}
+          />
+          <TransactionsTable>
+            {loading ? (
+              <NoData>
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="xl"
+                />
+              </NoData>
+            ) : filteredTransactions.length > 0 ? (
               <>
-                {transactions.length > 0 ? (
-                  <>
-                    <Thead>
-                      <Tr>
-                        <Th>Tranferencia</Th>
-                        <Th>Metodo</Th>
-                        <Th>Preço</Th>
-                        <Th>Status</Th>
-                        <Th isNumeric>Data</Th>
-                        <Th>Ações</Th>
-                      </Tr>
-                    </Thead>
-                    <tbody>
-                      {loading ? (
-                        <>
-                          <Spinner
-                            thickness="4px"
-                            speed="0.65s"
-                            emptyColor="gray.200"
-                            color="blue.500"
-                            size="xl"
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <>
-                            {filteredTransactions.map((transaction) => (
-                              <Tr key={transaction.id}>
-                                <Td width="20%">{transaction.name || ''}</Td>
-                                <Td>{transaction.metodo || ''}</Td>
-                                <Td>
-                                  <PriceHighLight
-                                    variant={
-                                      transaction.status ||
-                                      (() => selectedStatus)
-                                    }
+                <Table variant={'gray'}>
+                  <Thead>
+                    <Tr>
+                      <Th>Transferência</Th>
+                      <Th>Método</Th>
+                      <Th>Preço</Th>
+                      <Th>Status</Th>
+                      <Th isNumeric>Data</Th>
+                      <Th>Ações</Th>
+                    </Tr>
+                  </Thead>
+                  <tbody>
+                    {filteredTransactions
+                      .slice((currentPage - 1) * 5, currentPage * 5)
+                      .map((transaction) => (
+                        <Tr key={transaction.id}>
+                          <Td width="20%">{transaction.name || ''}</Td>
+                          <Td>{transaction.metodo || ''}</Td>
+                          <Td>
+                            <PriceHighLight
+                              variant={
+                                transaction.status || (() => selectedStatus)
+                              }
+                            >
+                              R$
+                              {transaction.status === 'outcome' ? ' -' : ' '}
+                              {formatPrice(parseFloat(transaction.preco || ''))}
+                            </PriceHighLight>
+                          </Td>
+                          <Td>
+                            <p>{transaction.categoria}</p>
+                          </Td>
+                          <Td width="10%">
+                            {new Intl.DateTimeFormat('pt-BR').format(
+                              new Date(transaction.created_at || ''),
+                            )}
+                          </Td>
+                          <Td>
+                            <Tooltip.Provider>
+                              <Tooltip.Root>
+                                <Tooltip.Trigger asChild>
+                                  <button
+                                    onClick={() => handlePdf(transaction.id)}
                                   >
-                                    R$
-                                    {transaction.status === 'outcome'
-                                      ? ' -'
-                                      : ' '}
-                                    {formatPrice(
-                                      parseFloat(transaction.preco || ''),
-                                    )}
-                                  </PriceHighLight>
-                                </Td>
-                                <Td>
-                                  <p>{transaction.categoria}</p>
-                                </Td>
-                                <Td width="10%">
-                                  {new Intl.DateTimeFormat('pt-BR').format(
-                                    new Date(transaction.created_at || ''),
-                                  )}
-                                </Td>
-                                <Td>
-                                  <Tooltip.Provider>
-                                    <Tooltip.Root>
-                                      <Tooltip.Trigger asChild>
-                                        <button
-                                          onClick={() =>
-                                            handlePdf(transaction.id)
-                                          }
-                                        >
-                                          <Download />
-                                        </button>
-                                      </Tooltip.Trigger>
-                                      <Tooltip.Portal>
-                                        <Tooltip.Content
-                                          className="TooltipContent"
-                                          sideOffset={10}
-                                          side="right"
-                                        >
-                                          Download PDF
-                                        </Tooltip.Content>
-                                      </Tooltip.Portal>
-                                    </Tooltip.Root>
-                                  </Tooltip.Provider>
-                                </Td>
-                              </Tr>
-                            ))}
-                          </>
-                        </>
-                      )}
-                    </tbody>
-                  </>
-                ) : (
-                  <>
-                    <NoData>Sem transações</NoData>
-                  </>
-                )}
+                                    <Download />
+                                  </button>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                  <Tooltip.Content
+                                    className="TooltipContent"
+                                    sideOffset={10}
+                                    side="right"
+                                  >
+                                    Download PDF
+                                  </Tooltip.Content>
+                                </Tooltip.Portal>
+                              </Tooltip.Root>
+                            </Tooltip.Provider>
+                          </Td>
+                        </Tr>
+                      ))}
+                  </tbody>
+                </Table>
+                <PaginationComponent
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(filteredTransactions.length / 5)}
+                  handlePagination={handlePagination}
+                />
               </>
-            </Table>
-          )}
-        </TransactionsTable>
-      </TransactionsContainer>
-    </div>
+            ) : (
+              <>
+                <NoData>Sem transações</NoData>
+              </>
+            )}
+          </TransactionsTable>
+        </TransactionsContainer>
+      </div>
+    </>
   )
 }
