@@ -37,6 +37,7 @@ export function NewTransactionsModal() {
   const toast = useToast()
 
   const { error } = console
+// adicionar erros na api
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (
