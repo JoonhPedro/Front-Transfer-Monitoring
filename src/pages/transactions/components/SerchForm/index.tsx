@@ -5,7 +5,6 @@ import { ButtonSearch, SeachFormContainer, Select } from './styles'
 interface SearchFormProps {
   onSearch: (searchTerm: string) => void
   setSelectedStatus: (status: string) => void
-  loading: boolean
 }
 
 export function SearchForm({ onSearch, setSelectedStatus }: SearchFormProps) {
@@ -35,7 +34,9 @@ export function SearchForm({ onSearch, setSelectedStatus }: SearchFormProps) {
         />
         <Select onChange={handleStatusChange}>
           <option value="">Todos</option>
-          <option value="income">Entrada</option>
+          <option value="income" color="red">
+            Entrada
+          </option>
           <option value="outcome">Saída</option>
         </Select>
         <ButtonSearch type="submit">

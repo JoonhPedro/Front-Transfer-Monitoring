@@ -10,7 +10,7 @@ export const Container = styled.div`
 export const Button = styled.button`
   padding: 0.6rem 0.9rem;
   text-decoration: none;
-  margin-left: 0.5rem;
+  margin: 0 0.2rem;
   border-radius: 10px;
   cursor: pointer;
   &:hover {

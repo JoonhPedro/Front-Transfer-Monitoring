@@ -1,20 +1,21 @@
-import { useEffect, useState } from 'react'
 import { Spinner, Table, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react'
+import * as Tooltip from '@radix-ui/react-tooltip'
+import jsPDF from 'jspdf'
+import { Download } from 'phosphor-react'
+import { useEffect, useState } from 'react'
 import { Header } from '../../components/Header'
+import PaginationComponent from '../../components/Paginations'
 import { Summary } from '../../components/Summary'
 import { formatPrice } from '../../format/price'
 import { api } from '../../services/api'
 import { SearchForm } from './components/SerchForm'
 import {
+  ButtonCv,
   NoData,
   PriceHighLight,
   TransactionsContainer,
   TransactionsTable,
 } from './style'
-import jsPDF from 'jspdf'
-import { Download } from 'phosphor-react'
-import * as Tooltip from '@radix-ui/react-tooltip'
-import PaginationComponent from '../../components/Paginations'
 
 interface TransactionsProps {
   id: string
@@ -22,7 +23,7 @@ interface TransactionsProps {
   categoria: string
   preco: string
   metodo: string
-  file: string
+  observations: string
   status: 'income' | 'outcome'
   created_at: string
   updated_at: string
@@ -52,14 +53,20 @@ export function Transactions() {
     try {
       setLoading(true)
       const response = await api.get('/transactions')
-      setTransactions(response.data)
-      setFilteredTransactions(response.data)
+      const sortedTransactions = response.data.sort(
+        (a: TransactionsProps, b: TransactionsProps) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      )
+      setTransactions(sortedTransactions)
+      setFilteredTransactions(sortedTransactions)
     } catch (err) {
       console.error((err as Error).message)
     } finally {
       setLoading(false)
     }
   }
+
+  console.log(api.get('/transactions'))
 
   const handleSearch = (searchTerm: string) => {
     try {
@@ -93,6 +100,9 @@ export function Transactions() {
   const handlePagination = (page: number) => {
     setCurrentPage(page)
   }
+  const getStatusLabel = (status: string) => {
+    return status === 'outcome' ? 'saída' : 'entrada'
+  }
 
   function handlePdf(id: string) {
     const transaction = transactions.find((item) => item.id === id)
@@ -107,13 +117,8 @@ export function Transactions() {
       })
       return
     }
-
     // eslint-disable-next-line new-cap
     const doc = new jsPDF('p', 'pt')
-
-    const getStatusLabel = (status: string) => {
-      return status === 'outcome' ? 'saída' : 'entrada'
-    }
 
     doc.text(`Nome da Transferência: ${transaction.name}`, 10, 40)
     doc.text(`Categoria: ${transaction.categoria}`, 10, 80)
@@ -127,112 +132,147 @@ export function Transactions() {
       10,
       240,
     )
-    doc.text(`Observações: ${transaction.file}`, 10, 280)
+    doc.text(
+      `Observações: ${transaction.observations || 'Sem observações'}`,
+      10,
+      280,
+    )
 
     doc.save(`Transferencia_${transaction.name}.pdf`)
   }
 
+  const downloadCSV = () => {
+    try {
+      setLoading(true)
+      const csvContent = generateCSV(transactions)
+      const blob = new Blob([csvContent], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'transactions.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      toast({
+        title: 'Transações não encontrada...',
+        status: 'error',
+        duration: 1500,
+        isClosable: true,
+        position: 'top-right',
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const generateCSV = (data: TransactionsProps[]) => {
+    const header = Object.keys(data[0]).join(',') + '\n'
+    const body = data
+      .map((transaction) => Object.values(transaction).join(',') + '\n')
+      .join('')
+    return header + body
+  }
+  console.log(transactions)
+
   return (
     <>
-      <div>
-        <Header />
-        <Summary />
-        <TransactionsContainer>
-          <SearchForm
-            onSearch={handleSearch}
-            setSelectedStatus={handleSelectedStatusChange}
-            loading={loading}
-          />
-          <TransactionsTable>
-            {loading ? (
-              <NoData>
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="blue.500"
-                  size="xl"
-                />
-              </NoData>
-            ) : filteredTransactions.length > 0 ? (
-              <>
-                <Table variant={'gray'}>
-                  <Thead>
-                    <Tr>
-                      <Th>Transferência</Th>
-                      <Th>Método</Th>
-                      <Th>Preço</Th>
-                      <Th>Status</Th>
-                      <Th isNumeric>Data</Th>
-                      <Th>Ações</Th>
-                    </Tr>
-                  </Thead>
-                  <tbody>
-                    {filteredTransactions
-                      .slice((currentPage - 1) * 5, currentPage * 5)
-                      .map((transaction) => (
-                        <Tr key={transaction.id}>
-                          <Td width="20%">{transaction.name || ''}</Td>
-                          <Td>{transaction.metodo || ''}</Td>
-                          <Td>
-                            <PriceHighLight
-                              variant={
-                                transaction.status || (() => selectedStatus)
-                              }
-                            >
-                              R$
-                              {transaction.status === 'outcome' ? ' -' : ' '}
-                              {formatPrice(parseFloat(transaction.preco || ''))}
-                            </PriceHighLight>
-                          </Td>
-                          <Td>
-                            <p>{transaction.categoria}</p>
-                          </Td>
-                          <Td width="10%">
-                            {new Intl.DateTimeFormat('pt-BR').format(
-                              new Date(transaction.created_at || ''),
-                            )}
-                          </Td>
-                          <Td>
-                            <Tooltip.Provider>
-                              <Tooltip.Root>
-                                <Tooltip.Trigger asChild>
-                                  <button
-                                    onClick={() => handlePdf(transaction.id)}
-                                  >
-                                    <Download />
-                                  </button>
-                                </Tooltip.Trigger>
-                                <Tooltip.Portal>
-                                  <Tooltip.Content
-                                    className="TooltipContent"
-                                    sideOffset={10}
-                                    side="right"
-                                  >
-                                    Download PDF
-                                  </Tooltip.Content>
-                                </Tooltip.Portal>
-                              </Tooltip.Root>
-                            </Tooltip.Provider>
-                          </Td>
-                        </Tr>
-                      ))}
-                  </tbody>
-                </Table>
-                <PaginationComponent
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(filteredTransactions.length / 5)}
-                  handlePagination={handlePagination}
-                />
-              </>
-            ) : (
-              <>
-                <NoData>Sem transações</NoData>
-              </>
-            )}
-          </TransactionsTable>
-        </TransactionsContainer>
-      </div>
+      <Header />
+      <Summary />
+      <TransactionsContainer>
+        <SearchForm
+          onSearch={handleSearch}
+          setSelectedStatus={handleSelectedStatusChange}
+        />
+        <ButtonCv onClick={downloadCSV}>Download CSV</ButtonCv>
+        <TransactionsTable>
+          {loading ? (
+            <NoData>
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+            </NoData>
+          ) : filteredTransactions.length > 0 ? (
+            <>
+              <Table variant={'gray'}>
+                <Thead>
+                  <Tr>
+                    <Th>Transferência</Th>
+                    <Th>Método</Th>
+                    <Th>Preço</Th>
+                    <Th>Status</Th>
+                    <Th isNumeric>Data</Th>
+                    <Th>Ações</Th>
+                  </Tr>
+                </Thead>
+                <tbody>
+                  {filteredTransactions
+                    .slice((currentPage - 1) * 5, currentPage * 5)
+                    .map((transaction) => (
+                      <Tr key={transaction.id}>
+                        <Td width="20%">{transaction.name || ''}</Td>
+                        <Td>{transaction.metodo || ''}</Td>
+                        <Td>
+                          <PriceHighLight
+                            variant={
+                              transaction.status || (() => selectedStatus)
+                            }
+                          >
+                            R$
+                            {transaction.status === 'outcome' ? ' -' : ' '}
+                            {formatPrice(parseFloat(transaction.preco || ''))}
+                          </PriceHighLight>
+                        </Td>
+                        <Td>
+                          <p>{transaction.categoria}</p>
+                        </Td>
+                        <Td width="10%">
+                          {new Intl.DateTimeFormat('pt-BR').format(
+                            new Date(transaction.created_at || ''),
+                          )}
+                        </Td>
+                        <Td>
+                          <Tooltip.Provider>
+                            <Tooltip.Root>
+                              <Tooltip.Trigger asChild>
+                                <button
+                                  onClick={() => handlePdf(transaction.id)}
+                                >
+                                  <Download />
+                                </button>
+                              </Tooltip.Trigger>
+                              <Tooltip.Portal>
+                                <Tooltip.Content
+                                  className="TooltipContent"
+                                  sideOffset={10}
+                                  side="right"
+                                >
+                                  Download PDF
+                                </Tooltip.Content>
+                              </Tooltip.Portal>
+                            </Tooltip.Root>
+                          </Tooltip.Provider>
+                        </Td>
+                      </Tr>
+                    ))}
+                </tbody>
+              </Table>
+              <PaginationComponent
+                currentPage={currentPage}
+                totalPages={Math.ceil(filteredTransactions.length / 5)}
+                handlePagination={handlePagination}
+              />
+            </>
+          ) : (
+            <>
+              <NoData>Sem transações</NoData>
+            </>
+          )}
+        </TransactionsTable>
+      </TransactionsContainer>
     </>
   )
 }

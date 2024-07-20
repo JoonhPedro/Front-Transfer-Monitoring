@@ -10,7 +10,6 @@ export const TransactionsTable = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 0.5rem;
-  padding-top: 1rem;
 
   td {
     padding: 1.25rem 2rem;
@@ -41,4 +40,32 @@ export const NoData = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+`
+
+export const ButtonCv = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  border: 0;
+  padding: 1.07rem;
+  font-weight: bold;
+  border-radius: 6px;
+  position: relative;
+  left: 58.5rem;
+  border: 1px solid ${(props) => props.theme['green-300']};
+  bottom: 3.43rem;
+  background: ${(props) => props.theme['green-500']};
+  border-color: ${(props) => props.theme['green-500']};
+  color: ${(props) => props.theme.white};
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background: transparent;
+    color: ${(props) => props.theme['green-300']};
+  }
 `

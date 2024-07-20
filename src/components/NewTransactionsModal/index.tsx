@@ -20,6 +20,7 @@ interface TransactionsProps {
   preco: string
   metodo: string
   status: string
+  observations: string
   created_at: string
   updated_at: string
 }
@@ -29,7 +30,7 @@ export function NewTransactionsModal() {
   const nameRef = useRef<HTMLInputElement | null>(null)
   const categoriaRef = useRef<HTMLInputElement | null>(null)
   const precoRef = useRef<HTMLInputElement | null>(null)
-  const fileRef = useRef<HTMLInputElement | null>(null)
+  const observationsRef = useRef<HTMLInputElement | null>(null)
   const metodoRef = useRef<HTMLSelectElement | null>(null)
   const [status, setStatus] = useState<string>('income')
   const [loading, setLoading] = useState(false)
@@ -37,7 +38,6 @@ export function NewTransactionsModal() {
   const toast = useToast()
 
   const { error } = console
-  // adicionar erros na api
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (
@@ -55,9 +55,10 @@ export function NewTransactionsModal() {
         categoria: categoriaRef.current.value,
         preco: precoRef.current.value,
         metodo: metodoRef.current.value,
-        file: fileRef.current?.value,
+        observations: observationsRef.current?.value,
         status,
       })
+
       setTransactions([...transactions, response.data])
       toast({
         title: 'Transação Realizada com Sucesso.',
@@ -66,6 +67,9 @@ export function NewTransactionsModal() {
         isClosable: true,
         position: 'top-right',
       })
+      if (response.data) {
+        window.location.reload()
+      }
     } catch (err) {
       toast({
         title: 'Erro.',
@@ -79,7 +83,6 @@ export function NewTransactionsModal() {
     } finally {
       setLoading(false)
     }
-    location.reload()
   }
 
   function handleStatusChange(selectedStatus: string) {
@@ -134,7 +137,11 @@ export function NewTransactionsModal() {
                 required
                 ref={categoriaRef}
               />
-              <input type="text" placeholder="Observações" ref={fileRef} />
+              <input
+                type="text"
+                placeholder="Observações"
+                ref={observationsRef}
+              />
               <Select
                 ref={metodoRef}
                 defaultValue=""
@@ -147,7 +154,7 @@ export function NewTransactionsModal() {
                 <option value="Dinheiro">Dinheiro</option>
                 <option value="Pix">PIX</option>
                 <option value="Cartao de credito">Cartão de crédito</option>
-                <option value="Cartão Debito">Cartão Debito</option>
+                <option value="Cartão Debito">Cartão Débito</option>
                 <option value="text">Outros</option>
               </Select>
               {showOtherInput && (

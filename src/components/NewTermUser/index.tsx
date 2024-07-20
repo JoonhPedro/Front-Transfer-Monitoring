@@ -13,7 +13,7 @@ interface TermoProps {
   updated_at: string
 }
 
-gitexport function NewTermUser() {
+export function NewTermUser() {
   const [termo, setTermo] = useState<TermoProps[]>([])
 
   useEffect(() => {
