@@ -1,7 +1,9 @@
+import { Checkbox, Link, Spinner, useToast } from '@chakra-ui/react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react'
 import { useRef, useState } from 'react'
 import { api } from '../../services/api'
+import { NewTermUser } from '../NewTermUser'
 import {
   CloseButton,
   Content,
@@ -10,8 +12,6 @@ import {
   TransactionType,
   TransactionTypeButton,
 } from './styles'
-import { Checkbox, Link, Spinner, useToast } from '@chakra-ui/react'
-import { NewTermUser } from '../NewTermUser'
 
 interface TransactionsProps {
   id: string
@@ -37,7 +37,7 @@ export function NewTransactionsModal() {
   const toast = useToast()
 
   const { error } = console
-// adicionar erros na api
+  // adicionar erros na api
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (
