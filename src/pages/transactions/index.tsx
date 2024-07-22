@@ -1,8 +1,8 @@
+import { useState, useEffect } from 'react'
 import { Spinner, Table, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react'
 import * as Tooltip from '@radix-ui/react-tooltip'
 import jsPDF from 'jspdf'
 import { Download } from 'phosphor-react'
-import { useEffect, useState } from 'react'
 import { Header } from '../../components/Header'
 import PaginationComponent from '../../components/Paginations'
 import { Summary } from '../../components/Summary'
@@ -39,6 +39,10 @@ export function Transactions() {
   >()
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [dateRange, setDateRange] = useState<{
+    startDate: Date | null
+    endDate: Date | null
+  }>({ startDate: null, endDate: null })
   const toast = useToast()
 
   useEffect(() => {
@@ -66,19 +70,21 @@ export function Transactions() {
     }
   }
 
-  console.log(api.get('/transactions'))
-
   const handleSearch = (searchTerm: string) => {
     try {
       setLoading(true)
       const filtered = transactions.filter(
         (transaction) =>
           transaction.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          (!selectedStatus || transaction.status === selectedStatus),
+          (!selectedStatus || transaction.status === selectedStatus) &&
+          (!dateRange.startDate ||
+            new Date(transaction.created_at) >= dateRange.startDate) &&
+          (!dateRange.endDate ||
+            new Date(transaction.created_at) <= dateRange.endDate),
       )
       setFilteredTransactions(filtered)
     } catch (err) {
-      return (err as Error).message
+      console.error((err as Error).message)
     } finally {
       setLoading(false)
     }
@@ -91,7 +97,7 @@ export function Transactions() {
         status as 'income' | 'outcome' | (() => 'income' | 'outcome'),
       )
     } catch (err) {
-      return (err as Error).message
+      console.error((err as Error).message)
     } finally {
       setLoading(false)
     }
@@ -99,9 +105,6 @@ export function Transactions() {
 
   const handlePagination = (page: number) => {
     setCurrentPage(page)
-  }
-  const getStatusLabel = (status: string) => {
-    return status === 'outcome' ? 'saída' : 'entrada'
   }
 
   function handlePdf(id: string) {
@@ -126,9 +129,7 @@ export function Transactions() {
     doc.text(`Método de Pagamento: ${transaction.metodo}`, 10, 160)
     doc.text(`Status: ${getStatusLabel(transaction.status)}`, 10, 200)
     doc.text(
-      `Data de Transferência: ${new Intl.DateTimeFormat('pt-BR').format(
-        new Date(transaction.created_at),
-      )}`,
+      `Data de Transferência: ${new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.created_at))}`,
       10,
       240,
     )
@@ -172,7 +173,17 @@ export function Transactions() {
       .join('')
     return header + body
   }
-  console.log(transactions)
+
+  const handleDateRangeChange = (
+    startDate: Date | null,
+    endDate: Date | null,
+  ) => {
+    setDateRange({ startDate, endDate })
+  }
+
+  const getStatusLabel = (status: string) => {
+    return status === 'outcome' ? 'saída' : 'entrada'
+  }
 
   return (
     <>
@@ -182,6 +193,7 @@ export function Transactions() {
         <SearchForm
           onSearch={handleSearch}
           setSelectedStatus={handleSelectedStatusChange}
+          onDateRangeChange={handleDateRangeChange} // Pass date range change handler
         />
         <ButtonCv onClick={downloadCSV}>Download CSV</ButtonCv>
         <TransactionsTable>
