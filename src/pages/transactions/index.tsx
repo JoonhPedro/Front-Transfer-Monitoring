@@ -193,7 +193,7 @@ export function Transactions() {
         <SearchForm
           onSearch={handleSearch}
           setSelectedStatus={handleSelectedStatusChange}
-          onDateRangeChange={handleDateRangeChange} // Pass date range change handler
+          onDateRangeChange={handleDateRangeChange}
         />
         <ButtonCv onClick={downloadCSV}>Download CSV</ButtonCv>
         <TransactionsTable>
