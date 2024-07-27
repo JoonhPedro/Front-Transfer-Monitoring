@@ -1,28 +1,28 @@
 import { MagnifyingGlass } from 'phosphor-react'
 import React, { useState } from 'react'
-import DatePicker from 'react-datepicker'
+// import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { ButtonSearch, SeachFormContainer, Select } from './styles'
 
 interface SearchFormProps {
   onSearch: (searchTerm: string) => void
   setSelectedStatus: (status: string) => void
-  onDateRangeChange: (startDate: Date | null, endDate: Date | null) => void
+  // onDateRangeChange: (startDate: Date | null, endDate: Date | null) => void
 }
 
 export function SearchForm({
   onSearch,
   setSelectedStatus,
-  onDateRangeChange,
+  // onDateRangeChange,
 }: SearchFormProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [dateRange, setDateRange] = useState<{
-    startDate: Date | null
-    endDate: Date | null
-  }>({
-    startDate: null,
-    endDate: null,
-  })
+  // const [dateRange, setDateRange] = useState<{
+  //   startDate: Date | null
+  //   endDate: Date | null
+  // }>({
+  //   startDate: null,
+  //   endDate: null,
+  // })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value)
@@ -37,21 +37,21 @@ export function SearchForm({
     setSelectedStatus(e.target.value)
   }
 
-  const handleStartDateChange = (date: Date | null) => {
-    setDateRange((prevDateRange) => ({
-      ...prevDateRange,
-      startDate: date,
-    }))
-    onDateRangeChange(date, dateRange.endDate)
-  }
+  // const handleStartDateChange = (date: Date | null) => {
+  //   setDateRange((prevDateRange) => ({
+  //     ...prevDateRange,
+  //     startDate: date,
+  //   }))
+  //   onDateRangeChange(date, dateRange.endDate)
+  // }
 
-  const handleEndDateChange = (date: Date | null) => {
-    setDateRange((prevDateRange) => ({
-      ...prevDateRange,
-      endDate: date,
-    }))
-    onDateRangeChange(dateRange.startDate, date)
-  }
+  // const handleEndDateChange = (date: Date | null) => {
+  //   setDateRange((prevDateRange) => ({
+  //     ...prevDateRange,
+  //     endDate: date,
+  //   }))
+  //   onDateRangeChange(dateRange.startDate, date)
+  // }
 
   return (
     <SeachFormContainer onSubmit={handleSubmit}>
@@ -68,7 +68,7 @@ export function SearchForm({
         </option>
         <option value="outcome">Saída</option>
       </Select>
-      <DatePicker
+      {/* <DatePicker
         selected={dateRange.startDate}
         onChange={handleStartDateChange}
         placeholderText="Data Inicial"
@@ -77,7 +77,7 @@ export function SearchForm({
         selected={dateRange.endDate}
         onChange={handleEndDateChange}
         placeholderText="Data Final"
-      />
+      /> */}
       <ButtonSearch type="submit">
         <MagnifyingGlass size={20} />
         Buscar

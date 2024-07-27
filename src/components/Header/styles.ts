@@ -16,6 +16,11 @@ export const HeaderContent = styled.div`
   align-items: center;
 `
 
+export const ButtonContainer = styled.div`
+  display: flex;
+  gap: 15px;
+`
+
 export const NewTransactionButton = styled.button`
   height: 50px;
   border: 0;

@@ -12,12 +12,15 @@ interface TransactionsProps {
   status: string
   created_at: string
   updated_at: string
+  userId: string
 }
 
 export function Summary() {
   const [transactions, setTransactions] = useState<TransactionsProps[]>([])
+  const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
+    loadUserId()
     loadTransactions()
   }, [])
 
@@ -30,15 +33,36 @@ export function Summary() {
     }
   }
 
+  function loadUserId() {
+    const userJson = localStorage.getItem('user')
+    if (userJson) {
+      try {
+        const user = JSON.parse(userJson)
+        setUserId(user.id)
+      } catch (error) {
+        console.error('Erro ao porcurar transactions do usuário:', error)
+      }
+    }
+  }
   function calculateInputs(): number {
+    if (!userId) return 0
+
     return transactions
-      .filter((transaction) => transaction.status === 'income')
+      .filter(
+        (transaction) =>
+          transaction.status === 'income' && transaction.userId === userId,
+      )
       .reduce((total, transaction) => total + parseFloat(transaction.preco), 0)
   }
 
   function calculateOutputs(): number {
+    if (!userId) return 0
+
     return transactions
-      .filter((transaction) => transaction.status === 'outcome')
+      .filter(
+        (transaction) =>
+          transaction.status === 'outcome' && transaction.userId === userId,
+      )
       .reduce((total, transaction) => total + parseFloat(transaction.preco), 0)
   }
 

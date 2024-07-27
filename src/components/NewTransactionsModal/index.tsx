@@ -13,20 +13,7 @@ import {
   TransactionTypeButton,
 } from './styles'
 
-interface TransactionsProps {
-  id: string
-  name: string
-  categoria: string
-  preco: string
-  metodo: string
-  status: string
-  observations: string
-  created_at: string
-  updated_at: string
-}
-
 export function NewTransactionsModal() {
-  const [transactions, setTransactions] = useState<TransactionsProps[]>([])
   const nameRef = useRef<HTMLInputElement | null>(null)
   const categoriaRef = useRef<HTMLInputElement | null>(null)
   const precoRef = useRef<HTMLInputElement | null>(null)
@@ -37,29 +24,72 @@ export function NewTransactionsModal() {
   const [showOtherInput, setShowOtherInput] = useState(false)
   const toast = useToast()
 
-  const { error } = console
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (
-      !nameRef.current?.value ||
-      !categoriaRef.current?.value ||
-      !precoRef.current?.value ||
-      !metodoRef.current?.value
-    )
+
+    const name = nameRef.current?.value
+    const categoria = categoriaRef.current?.value
+    const preco = precoRef.current?.value
+    const metodo = metodoRef.current?.value
+    const observations = observationsRef.current?.value
+
+    if (!name || !categoria || !preco || !metodo) {
+      toast({
+        title: 'Erro.',
+        description: 'Todos os campos obrigatórios devem ser preenchidos.',
+        status: 'error',
+        duration: 1500,
+        isClosable: true,
+        position: 'top-right',
+      })
       return
+    }
+
+    const userJson = localStorage.getItem('user')
+    let userId: string | null = null
+
+    if (userJson) {
+      try {
+        const user = JSON.parse(userJson)
+        userId = user.id
+      } catch (error) {
+        console.error('Erro ao analisar o JSON do usuário:', error)
+        toast({
+          title: 'Erro.',
+          description: 'Erro ao processar dados do usuário.',
+          status: 'error',
+          duration: 1500,
+          isClosable: true,
+          position: 'top-right',
+        })
+        return
+      }
+    }
+
+    if (!userId) {
+      toast({
+        title: 'Erro.',
+        description: 'Usuário não está autenticado.',
+        status: 'error',
+        duration: 1500,
+        isClosable: true,
+        position: 'top-right',
+      })
+      return
+    }
 
     try {
       setLoading(true)
-      const response = await api.post('/transactions', {
-        name: nameRef.current.value,
-        categoria: categoriaRef.current.value,
-        preco: precoRef.current.value,
-        metodo: metodoRef.current.value,
-        observations: observationsRef.current?.value,
+      await api.post('/transactions', {
+        name,
+        categoria,
+        preco,
+        metodo,
+        observations,
         status,
+        userId,
       })
 
-      setTransactions([...transactions, response.data])
       toast({
         title: 'Transação Realizada com Sucesso.',
         status: 'success',
@@ -67,9 +97,6 @@ export function NewTransactionsModal() {
         isClosable: true,
         position: 'top-right',
       })
-      if (response.data) {
-        window.location.reload()
-      }
     } catch (err) {
       toast({
         title: 'Erro.',
@@ -79,7 +106,7 @@ export function NewTransactionsModal() {
         isClosable: true,
         position: 'top-right',
       })
-      error('Failed to create transaction:', err)
+      console.error('Failed to create transaction:', err)
     } finally {
       setLoading(false)
     }
@@ -90,12 +117,7 @@ export function NewTransactionsModal() {
   }
 
   function handleSelectChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const selectedValue = e.target.value
-    if (selectedValue === 'text') {
-      setShowOtherInput(true)
-    } else {
-      setShowOtherInput(false)
-    }
+    setShowOtherInput(e.target.value === 'text')
   }
 
   return (
@@ -107,89 +129,75 @@ export function NewTransactionsModal() {
           <X size={24} />
         </CloseButton>
         {loading ? (
-          <>
-            <Spinner
-              thickness="4px"
-              speed="0.65s"
-              emptyColor="gray.200"
-              color="blue.500"
-              size="xl"
-            />
-          </>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
         ) : (
-          <>
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                placeholder="Descrição"
-                required
-                ref={nameRef}
-              />
-              <input
-                type="number"
-                placeholder="Preço"
-                required
-                ref={precoRef}
-              />
-              <input
-                type="text"
-                placeholder="Categoria"
-                required
-                ref={categoriaRef}
-              />
-              <input
-                type="text"
-                placeholder="Observações"
-                ref={observationsRef}
-              />
-              <Select
-                ref={metodoRef}
-                defaultValue=""
-                required
-                onChange={handleSelectChange}
+          <form onSubmit={handleSubmit}>
+            <input type="text" placeholder="Descrição" required ref={nameRef} />
+            <input type="number" placeholder="Preço" required ref={precoRef} />
+            <input
+              type="text"
+              placeholder="Categoria"
+              required
+              ref={categoriaRef}
+            />
+            <input
+              type="text"
+              placeholder="Observações"
+              ref={observationsRef}
+            />
+            <Select
+              ref={metodoRef}
+              defaultValue=""
+              required
+              onChange={handleSelectChange}
+            >
+              <option value="" disabled>
+                Selecione um método
+              </option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Pix">PIX</option>
+              <option value="Cartao de credito">Cartão de crédito</option>
+              <option value="Cartão Debito">Cartão Débito</option>
+              <option value="text">Outros</option>
+            </Select>
+            {showOtherInput && (
+              <input type="text" placeholder="Digite aqui outro método" />
+            )}
+            <TransactionType>
+              <TransactionTypeButton
+                variant="income"
+                value="income"
+                onClick={() => handleStatusChange('income')}
               >
-                <option value="" disabled>
-                  Selecione um método
-                </option>
-                <option value="Dinheiro">Dinheiro</option>
-                <option value="Pix">PIX</option>
-                <option value="Cartao de credito">Cartão de crédito</option>
-                <option value="Cartão Debito">Cartão Débito</option>
-                <option value="text">Outros</option>
-              </Select>
-              {showOtherInput && (
-                <input type="text" placeholder="Digite aqui outro método" />
-              )}
-              <TransactionType>
-                <TransactionTypeButton
-                  variant="income"
-                  value="income"
-                  onClick={() => handleStatusChange('income')}
-                >
-                  <ArrowCircleUp size={24} />
-                  Entrada
-                </TransactionTypeButton>
-                <TransactionTypeButton
-                  variant="outcome"
-                  value="outcome"
-                  onClick={() => handleStatusChange('outcome')}
-                >
-                  <ArrowCircleDown size={24} />
-                  Saída
-                </TransactionTypeButton>
-              </TransactionType>
-              <button type="submit">Cadastrar</button>
-              <Checkbox required>
-                <p>Li e estou de acordo com a Política de Privacidade</p>
-              </Checkbox>
-              <Dialog.Root>
-                <Dialog.Trigger asChild>
-                  <Link>Política de Privacidade</Link>
-                </Dialog.Trigger>
-                <NewTermUser />
-              </Dialog.Root>
-            </form>
-          </>
+                <ArrowCircleUp size={24} />
+                Entrada
+              </TransactionTypeButton>
+              <TransactionTypeButton
+                variant="outcome"
+                value="outcome"
+                onClick={() => handleStatusChange('outcome')}
+              >
+                <ArrowCircleDown size={24} />
+                Saída
+              </TransactionTypeButton>
+            </TransactionType>
+            <button type="submit">Cadastrar</button>
+            <Checkbox required>
+              <p>Li e estou de acordo com a Política de Privacidade</p>
+            </Checkbox>
+            <Dialog.Root>
+              <Dialog.Trigger asChild>
+                <Link>Política de Privacidade</Link>
+              </Dialog.Trigger>
+              <NewTermUser />
+            </Dialog.Root>
+          </form>
         )}
       </Content>
     </Dialog.Portal>

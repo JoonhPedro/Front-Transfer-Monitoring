@@ -1,11 +1,11 @@
-import { Transactions } from './pages/transactions'
 import { GlobalStyle } from './styles/global'
+import { AppRoutes } from './Routes/index'
 
 export function App() {
   return (
     <>
       <GlobalStyle />
-      <Transactions />
+      <AppRoutes />
     </>
   )
 }
