@@ -36,7 +36,7 @@ export function TableTransactions({
     try {
       const user = JSON.parse(userJson)
       userId = user.id
-      console.log('Recuperando userId:', userId)
+      // console.log('Recuperando userId:', userId)
     } catch (error) {
       console.error('Erro ao analisar o JSON do usuário:', error)
       return

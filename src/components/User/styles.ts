@@ -10,6 +10,27 @@ export const Overlay = styled(Dialog.Overlay)`
   background: rgb(0, 0, 0, 0.75);
 `
 
+export const Container = styled.div`
+  min-width: 25rem;
+  display: grid;
+  text-align: center;
+`
+export const Logo = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1rem;
+  img{
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  border-radius: 50%;
+  }
+`
+
+export const ContainerUser = styled.div`
+
+`
+
 export const Content = styled(Dialog.Content)`
   min-width: 32rem;
   border-radius: 6px;
@@ -20,13 +41,6 @@ export const Content = styled(Dialog.Content)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
-  form {
-    margin-top: 2rem;
-
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
 
     input {
       border-radius: 6px;
@@ -56,7 +70,6 @@ export const Content = styled(Dialog.Content)`
         transition: background-color 0.2s;
       }
     }
-  }
   Link {
     text-align: center;
   }
@@ -77,74 +90,4 @@ export const TransactionType = styled(RadioGroup.Root)`
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-top: 0.5rem;
-`
-
-interface TransactionTypeButtonProps {
-  variant: 'income' | 'outcome'
-}
-
-export const TransactionTypeButton = styled(
-  RadioGroup.Item,
-)<TransactionTypeButtonProps>`
-  background: ${(props) => props.theme['gray-700']};
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-  color: ${(props) => props.theme['gray-300']};
-  border: none;
-
-  svg {
-    color: ${(props) =>
-      props.variant === 'income'
-        ? props.theme['green-300']
-        : props.theme['red-300']};
-  }
-
-  &[data-state='unchecked']:hover {
-    transition: background-color 0.2s;
-    background: ${(props) => props.theme['gray-600']};
-  }
-
-  &[data-state='checked'] {
-    color: ${(props) => props.theme.white};
-    background: ${(props) =>
-      props.variant === 'income'
-        ? props.theme['green-500']
-        : props.theme['red-500']};
-    svg {
-      color: ${(props) => props.theme.white};
-    }
-  }
-`
-
-export const Select = styled.select`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: transparent;
-  border: 1px solid ${(props) => props.theme['gray-300']};
-  color: ${(props) => props.theme['green-300']};
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  &:focus {
-    border-color: ${(props) => props.theme['green-500']};
-    outline: none;
-  }
-  option {
-    color: ${(props) => props.theme['gray-700']};
-    padding: 1rem;
-  }
-  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><path d="M6 9l6 6 6-6"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  padding-right: 2.5rem;
 `
