@@ -1,15 +1,15 @@
+import { Spinner, Table, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import * as Tooltip from '@radix-ui/react-tooltip'
 import { Download } from 'phosphor-react'
 import PaginationComponent from '../../../../../components/Paginations'
 import { formatPrice } from '../../../../../format/price'
+import { TransactionsProps } from '../../../index'
 import {
   NoData,
   PriceHighLight,
   TransactionsContainer,
   TransactionsTable,
 } from './styles'
-import { Spinner, Table, Td, Th, Thead, Tr } from '@chakra-ui/react'
-import * as Tooltip from '@radix-ui/react-tooltip'
-import { TransactionsProps } from '../../../index'
 
 export interface TableTransactionsProps {
   loading: boolean

@@ -1,15 +1,17 @@
 import {
+  ButtonContainer,
   HeaderContainer,
   HeaderContent,
   NewTransactionButton,
-  ButtonContainer,
 } from './styles'
 
-import { Link } from 'react-router-dom'
 import * as Dialog from '@radix-ui/react-dialog'
+import { FaRegUser } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 import logoImg from '../../assets/logo.svg'
-import { NewTransactionsModal } from '../NewTransactionsModal'
 import { ButtonSearch } from '../../pages/transactions/layout/components/SerchForm/styles'
+import { NewTransactionsModal } from '../NewTransactionsModal'
+import { ModalUser } from '../User'
 
 export function Header() {
   return (
@@ -28,6 +30,14 @@ export function Header() {
           <ButtonSearch>
             <Link to="/Relatorios">Relatorio</Link>
           </ButtonSearch>
+          <Dialog.Root>
+            <Dialog.Trigger asChild>
+              <ButtonSearch>
+                <FaRegUser />
+              </ButtonSearch>
+            </Dialog.Trigger>
+            <ModalUser />
+          </Dialog.Root>
         </ButtonContainer>
       </HeaderContent>
     </HeaderContainer>

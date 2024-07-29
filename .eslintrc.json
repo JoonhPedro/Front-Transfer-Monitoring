@@ -2,5 +2,12 @@
   "extends": "@rocketseat/eslint-config/react",
   "rules": {
     "new-cap": ["error", { "newIsCap": true }]
-  }
+  },
+  "prettier/prettier": [
+    "error",
+    {
+      "singleQuote": true,
+      "parser": "flow"
+    }
+  ]
 }
