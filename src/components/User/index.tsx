@@ -79,14 +79,14 @@ export function ModalUser() {
             <p>Carregando...</p>
           ) : (
             <>
-            <p>{filterUser.name}</p>
-            <p>{filterUser.email}</p>
+            <p>{filterUser.name || ''}</p>
+            <p>{filterUser.email || ''}</p>
             </>
           )}
           </>
         )}
         </ContainerUser>
-        </Container>
+       </Container>
         <button onClick={handleLogout}>Sair</button>
       </Content>
     </Dialog.Portal>
