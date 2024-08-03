@@ -4,11 +4,30 @@ export const Container = styled.div`
   width: 100%;
   max-width: 1128px;
   margin: 0 auto;
-  padding: 0 1.5rem;
-
+  padding: 1.5rem 2.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+`
+export const ContainerTable = styled.div`
+  height: auto;
+  max-width: 1128px;
+  margin: 50px auto;
+  border-radius: 20px;
+  padding: 0.5rem 1.5rem 0;
+  background: ${(props) => props.theme['gray-700']};
+`
+
+export const Header = styled.div`
+  padding: 1.5rem 2.5rem 0;
+  svg{
+    color: ${(props) => props.theme['green-500']} ;
+  }
+`
+
+export const DatePickerContainer = styled.div`
+  display: flex;
+  gap: 15px;
 `
 
 export const ButtonContainer = styled.div`
@@ -16,15 +35,17 @@ export const ButtonContainer = styled.div`
   gap: 15px;
 `
 
-export const Title = styled.h1``
+export const Title = styled.h1`
+  font-weight: bold;
+  padding: 1rem 0 0;
+`
 
 export const Button = styled.button`
-  height: 50px;
   border: 0;
   background: ${(props) => props.theme['green-500']};
   color: ${(props) => props.theme.white};
   font-weight: bold;
-  padding: 0 1.25rem;
+  padding: 0.7rem;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
@@ -37,7 +58,7 @@ export const Button = styled.button`
 export const TransactionsContainer = styled.main`
   width: 100%;
   max-width: 1120px;
-  margin: 4rem auto 0;
+  margin: 0 auto;
   padding: 0 1.5rem;
 `
 
@@ -111,7 +132,7 @@ export const Input = styled.div`
     border: 0;
     background: ${(props) => props.theme['gray-900']};
     color: ${(props) => props.theme['gray-300']};
-    padding: 1rem;
+    padding: 0.7rem;
 
     &::placeholder {
       color: ${(props) => props.theme['gray-500']};

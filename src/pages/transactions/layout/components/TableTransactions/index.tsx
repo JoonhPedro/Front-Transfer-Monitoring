@@ -41,8 +41,9 @@ export function TableTransactions({
       return
     }
   }
-  const filterUser = filteredTransactions.find(
-    (transactions) => transactions.userId === userId,
+
+  const userTransactions = filteredTransactions.filter(
+    (transaction) => transaction.userId === userId,
   )
 
   return (
@@ -59,87 +60,75 @@ export function TableTransactions({
                 size="xl"
               />
             </NoData>
-          ) : filteredTransactions.length > 0 ? (
+          ) : userTransactions.length > 0 ? (
             <>
-              {filterUser && (
-                <>
-                  <Table variant={'gray'}>
-                    <Thead>
-                      <Tr>
-                        <Th>Transferência</Th>
-                        <Th>Método</Th>
-                        <Th>Preço</Th>
-                        <Th>Status</Th>
-                        <Th isNumeric>Data</Th>
-                        <Th>Ações</Th>
+              <Table variant={'gray'}>
+                <Thead>
+                  <Tr>
+                    <Th>Transferência</Th>
+                    <Th>Método</Th>
+                    <Th>Preço</Th>
+                    <Th>Status</Th>
+                    <Th isNumeric>Data</Th>
+                    <Th>Ações</Th>
+                  </Tr>
+                </Thead>
+                <tbody>
+                  {userTransactions
+                    .slice((currentPage - 1) * 5, currentPage * 5)
+                    .map((transaction) => (
+                      <Tr key={transaction.id}>
+                        <Td width="20%">{transaction.name || ''}</Td>
+                        <Td>{transaction.metodo || ''}</Td>
+                        <Td>
+                          <PriceHighLight
+                            variant={transaction.status || (() => selectedStatus)}
+                          >
+                            R$
+                            {transaction.status === 'outcome' ? ' -' : ' '}
+                            {formatPrice(parseFloat(transaction.preco || ''))}
+                          </PriceHighLight>
+                        </Td>
+                        <Td>
+                          <p>{transaction.categoria}</p>
+                        </Td>
+                        <Td width="10%">
+                          {new Intl.DateTimeFormat('pt-BR').format(
+                            new Date(transaction.created_at || ''),
+                          )}
+                        </Td>
+                        <Td>
+                          <Tooltip.Provider>
+                            <Tooltip.Root>
+                              <Tooltip.Trigger asChild>
+                                <button onClick={() => handlePdf(transaction.id)}>
+                                  <Download />
+                                </button>
+                              </Tooltip.Trigger>
+                              <Tooltip.Portal>
+                                <Tooltip.Content
+                                  className="TooltipContent"
+                                  sideOffset={10}
+                                  side="right"
+                                >
+                                  Download PDF
+                                </Tooltip.Content>
+                              </Tooltip.Portal>
+                            </Tooltip.Root>
+                          </Tooltip.Provider>
+                        </Td>
                       </Tr>
-                    </Thead>
-                    <tbody>
-                      {filteredTransactions
-                        .slice((currentPage - 1) * 5, currentPage * 5)
-                        .map((transaction) => (
-                          <Tr key={transaction.id}>
-                            <Td width="20%">{transaction.name || ''}</Td>
-                            <Td>{transaction.metodo || ''}</Td>
-                            <Td>
-                              <PriceHighLight
-                                variant={
-                                  transaction.status || (() => selectedStatus)
-                                }
-                              >
-                                R$
-                                {transaction.status === 'outcome' ? ' -' : ' '}
-                                {formatPrice(
-                                  parseFloat(transaction.preco || ''),
-                                )}
-                              </PriceHighLight>
-                            </Td>
-                            <Td>
-                              <p>{transaction.categoria}</p>
-                            </Td>
-                            <Td width="10%">
-                              {new Intl.DateTimeFormat('pt-BR').format(
-                                new Date(transaction.created_at || ''),
-                              )}
-                            </Td>
-                            <Td>
-                              <Tooltip.Provider>
-                                <Tooltip.Root>
-                                  <Tooltip.Trigger asChild>
-                                    <button
-                                      onClick={() => handlePdf(transaction.id)}
-                                    >
-                                      <Download />
-                                    </button>
-                                  </Tooltip.Trigger>
-                                  <Tooltip.Portal>
-                                    <Tooltip.Content
-                                      className="TooltipContent"
-                                      sideOffset={10}
-                                      side="right"
-                                    >
-                                      Download PDF
-                                    </Tooltip.Content>
-                                  </Tooltip.Portal>
-                                </Tooltip.Root>
-                              </Tooltip.Provider>
-                            </Td>
-                          </Tr>
-                        ))}
-                    </tbody>
-                  </Table>
-                  <PaginationComponent
-                    currentPage={currentPage}
-                    totalPages={Math.ceil(filteredTransactions.length / 5)}
-                    handlePagination={handlePagination}
-                  />
-                </>
-              )}
+                    ))}
+                </tbody>
+              </Table>
+              <PaginationComponent
+                currentPage={currentPage}
+                totalPages={Math.ceil(userTransactions.length / 5)}
+                handlePagination={handlePagination}
+              />
             </>
           ) : (
-            <>
-              <NoData>Sem transações</NoData>
-            </>
+            <NoData>Sem transações</NoData>
           )}
         </TransactionsTable>
       </TransactionsContainer>

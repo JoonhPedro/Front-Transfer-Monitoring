@@ -1,4 +1,3 @@
-// import { Link } from 'react-router-dom'
 import {
   ButtonContainer,
   Container,
@@ -7,6 +6,9 @@ import {
   TransactionsContainer,
   TransactionsTable,
   Input,
+  DatePickerContainer,
+  ContainerTable,
+  Header,
 } from './styles'
 import { TableTransactions } from '../transactions/layout/components/TableTransactions'
 import { TransactionsProps } from '../transactions'
@@ -16,25 +18,21 @@ import jsPDF from 'jspdf'
 import { formatPrice } from '../../format/price'
 import { api } from '../../services/api'
 import DatePicker from 'react-datepicker'
+import { IoArrowBack } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom'
 
 export function Relatorios() {
   const [transactions, setTransactions] = useState<TransactionsProps[]>([])
-  const [filteredTransactions, setFilteredTransactions] = useState<
-    TransactionsProps[]
-  >([])
-  const [selectedStatus, setSelectedStatus] = useState<
-    'income' | 'outcome' | (() => 'income' | 'outcome')
-  >()
+  const [filteredTransactions, setFilteredTransactions] = useState<TransactionsProps[]>([])
+  const [selectedStatus, setSelectedStatus] = useState<'income' | 'outcome' | (() => 'income' | 'outcome')>()
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const toast = useToast()
-  const [dateRange, setDateRange] = useState<{
-    startDate: Date | null
-    endDate: Date | null
-  }>({
+  const [dateRange, setDateRange] = useState<{ startDate: Date | null, endDate: Date | null }>({
     startDate: null,
     endDate: null,
   })
+  const navigate = useNavigate()
 
   useEffect(() => {
     loadTransactions()
@@ -53,7 +51,6 @@ export function Relatorios() {
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       )
       setTransactions(sortedTransactions)
-      setFilteredTransactions(sortedTransactions)
     } catch (err) {
       console.error((err as Error).message)
     } finally {
@@ -77,6 +74,7 @@ export function Relatorios() {
   const handlePagination = (page: number) => {
     setCurrentPage(page)
   }
+
   const getStatusLabel = (status: string) => {
     return status === 'outcome' ? 'saída' : 'entrada'
   }
@@ -94,7 +92,7 @@ export function Relatorios() {
       })
       return
     }
-    // eslint-disable-next-line new-cap
+
     const doc = new jsPDF('p', 'pt')
 
     doc.text(`Nome da Transferência: ${transaction.name}`, 10, 40)
@@ -106,66 +104,119 @@ export function Relatorios() {
       `Data de Transferência: ${new Intl.DateTimeFormat('pt-BR').format(
         new Date(transaction.created_at),
       )}`,
-      10,
-      240,
+      10, 240,
     )
     doc.text(
       `Observações: ${transaction.observations || 'Sem observações'}`,
-      10,
-      280,
+      10, 280,
     )
 
     doc.save(`Transferencia_${transaction.name}.pdf`)
   }
 
-  // const downloadCSV = () => {
-  //   try {
-  //     setLoading(true)
-  //     const csvContent = generateCSV(transactions)
-  //     const blob = new Blob([csvContent], { type: 'text/csv' })
-  //     const url = URL.createObjectURL(blob)
-  //     const a = document.createElement('a')
-  //     a.href = url
-  //     a.download = 'transactions.csv'
-  //     a.click()
-  //     URL.revokeObjectURL(url)
-  //   } catch (error) {
-  //     toast({
-  //       title: 'Transações não encontrada...',
-  //       status: 'error',
-  //       duration: 1500,
-  //       isClosable: true,
-  //       position: 'top-right',
-  //     })
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
-
-  // const generateCSV = (data: TransactionsProps[]) => {
-  //   const header = Object.keys(data[0]).join(',') + '\n'
-  //   const body = data
-  //     .map((transaction) => Object.values(transaction).join(',') + '\n')
-  //     .join('')
-  //   return header + body
-  // }
   const handleSearch = () => {
     try {
       setLoading(true)
-      const filtered = transactions.filter(
-        (transaction) =>
-          (!selectedStatus || transaction.status === selectedStatus) &&
-          (!dateRange.startDate ||
-            new Date(transaction.created_at) >= dateRange.startDate) &&
-          (!dateRange.endDate ||
-            new Date(transaction.created_at) <= dateRange.endDate),
-      )
-      setFilteredTransactions(filtered)
+      if (dateRange.startDate && dateRange.endDate) {
+        const filtered = transactions.filter(
+          (transaction) =>
+            (!selectedStatus || transaction.status === selectedStatus) &&
+            new Date(transaction.created_at) >= dateRange.startDate! &&
+            new Date(transaction.created_at) <= dateRange.endDate!,
+        )
+        if (filtered.length === 0) {
+          toast({
+            title: 'Não há transações nesse intervalo de datas.',
+            status: 'warning',
+            duration: 1500,
+            isClosable: true,
+            position: 'top-right',
+          })
+        } else {
+          setFilteredTransactions(filtered)
+        }
+      } else {
+        toast({
+          title: 'Por favor, selecione um intervalo de datas.',
+          status: 'warning',
+          duration: 1500,
+          isClosable: true,
+          position: 'top-right',
+        })
+      }
     } catch (err) {
       console.error((err as Error).message)
     } finally {
       setLoading(false)
     }
+  }
+
+  const downloadCSV = () => {
+    try {
+      setLoading(true)
+      const userJson = localStorage.getItem('user')
+      let userId: string | null = null
+
+      if (userJson) {
+        try {
+          const user = JSON.parse(userJson)
+          userId = user.id
+        } catch (error) {
+          console.error('Erro ao analisar o JSON do usuário:', error)
+          return
+        }
+      }
+
+      const userFilteredTransactions = filteredTransactions.filter(
+        (transaction) => transaction.userId === userId,
+      )
+
+      if (userFilteredTransactions.length === 0) {
+        toast({
+          title: 'Nenhuma transação encontrada para o usuário logado no intervalo de datas selecionado.',
+          status: 'warning',
+          duration: 1500,
+          isClosable: true,
+          position: 'top-right',
+        })
+        return
+      }
+
+      const csvContent = generateCSV(userFilteredTransactions)
+      const blob = new Blob([csvContent], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'transactions.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      toast({
+        title: 'Erro ao gerar o CSV.',
+        status: 'error',
+        duration: 1500,
+        isClosable: true,
+        position: 'top-right',
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const generateCSV = (data: TransactionsProps[]) => {
+    if (data.length === 0) {
+      return 'Nenhuma transação encontrada para o usuário logado no intervalo de datas selecionado.'
+    }
+
+    const header = Object.keys(data[0]).join(',') + '\n'
+    const body = data
+      .map((transaction) => Object.values(transaction).join(',') + '\n')
+      .join('')
+    return header + body
+  }
+
+  const handleBack = () => {
+    navigate('/transactions')
   }
 
   const handleDateRangeChange = (
@@ -191,44 +242,56 @@ export function Relatorios() {
     handleDateRangeChange(dateRange.startDate, date)
   }
 
-  // console.log(handleSearch)
-
   return (
     <>
-      <Container>
-        <Title>Relatórios Transferencia</Title>
-        <Input>
-          <DatePicker
-            selected={dateRange.startDate}
-            onChange={handleStartDateChange}
-            placeholderText="Data Inicial"
-          />
-        </Input>
-        <Input>
-          <DatePicker
-            selected={dateRange.endDate}
-            onChange={handleEndDateChange}
-            placeholderText="Data Final"
-          />
-        </Input>
-        <ButtonContainer>
-          <Button onClick={handleSearch}>Visualizar</Button>
-        </ButtonContainer>
-      </Container>
+      <ContainerTable>
+        <Header>
+          <button onClick={handleBack}>
+            <IoArrowBack size={20}/>
+          </button>
+        <Title>Relatórios Transferência</Title>
+        </Header>
+        <Container>
+          <DatePickerContainer>
+            <Input>
+              <DatePicker
+                selected={dateRange.startDate}
+                onChange={handleStartDateChange}
+                placeholderText="Data Inicial"
+              />
+            </Input>
+            <Input>
+              <DatePicker
+                selected={dateRange.endDate}
+                onChange={handleEndDateChange}
+                placeholderText="Data Final"
+              />
+            </Input>
+            <ButtonContainer>
+              <Button onClick={handleSearch}>Visualizar</Button>
+            </ButtonContainer>
+            <ButtonContainer>
+              <Button onClick={downloadCSV}>Baixar CSV</Button>
+            </ButtonContainer>
+          </DatePickerContainer>
+        </Container>
 
-      <TransactionsContainer>
-        <TransactionsTable>
-          <TableTransactions
-            loading={loading}
-            filteredTransactions={filteredTransactions}
-            currentPage={currentPage}
-            totalPages={Math.ceil(filteredTransactions.length / 5)}
-            handlePagination={handlePagination}
-            selectedStatus={handleSelectedStatusChange}
-            handlePdf={handlePdf}
-          />
-        </TransactionsTable>
-      </TransactionsContainer>
+        <TransactionsContainer>
+          <TransactionsTable>
+            {filteredTransactions.length > 0 && (
+              <TableTransactions
+                loading={loading}
+                filteredTransactions={filteredTransactions}
+                currentPage={currentPage}
+                totalPages={Math.ceil(filteredTransactions.length / 5)}
+                handlePagination={handlePagination}
+                selectedStatus={handleSelectedStatusChange}
+                handlePdf={handlePdf}
+              />
+            )}
+          </TransactionsTable>
+        </TransactionsContainer>
+      </ContainerTable>
     </>
   )
 }

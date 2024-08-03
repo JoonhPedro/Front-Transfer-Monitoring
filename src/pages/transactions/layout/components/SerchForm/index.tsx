@@ -13,16 +13,8 @@ interface SearchFormProps {
 export function SearchForm({
   onSearch,
   setSelectedStatus,
-  // onDateRangeChange,
 }: SearchFormProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  // const [dateRange, setDateRange] = useState<{
-  //   startDate: Date | null
-  //   endDate: Date | null
-  // }>({
-  //   startDate: null,
-  //   endDate: null,
-  // })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value)
@@ -36,22 +28,6 @@ export function SearchForm({
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedStatus(e.target.value)
   }
-
-  // const handleStartDateChange = (date: Date | null) => {
-  //   setDateRange((prevDateRange) => ({
-  //     ...prevDateRange,
-  //     startDate: date,
-  //   }))
-  //   onDateRangeChange(date, dateRange.endDate)
-  // }
-
-  // const handleEndDateChange = (date: Date | null) => {
-  //   setDateRange((prevDateRange) => ({
-  //     ...prevDateRange,
-  //     endDate: date,
-  //   }))
-  //   onDateRangeChange(dateRange.startDate, date)
-  // }
 
   return (
     <SeachFormContainer onSubmit={handleSubmit}>
@@ -68,16 +44,6 @@ export function SearchForm({
         </option>
         <option value="outcome">Saída</option>
       </Select>
-      {/* <DatePicker
-        selected={dateRange.startDate}
-        onChange={handleStartDateChange}
-        placeholderText="Data Inicial"
-      />
-      <DatePicker
-        selected={dateRange.endDate}
-        onChange={handleEndDateChange}
-        placeholderText="Data Final"
-      /> */}
       <ButtonSearch type="submit">
         <MagnifyingGlass size={20} />
         Buscar

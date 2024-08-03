@@ -5,7 +5,7 @@ import { Summary } from '../../components/Summary'
 import { formatPrice } from '../../format/price'
 import { api } from '../../services/api'
 import { SearchForm } from '../transactions/layout/components/SerchForm'
-import { ButtonCv, TransactionsContainer } from './style'
+import {  TransactionsContainer } from './style'
 import { TableTransactions } from '../transactions/layout/components/TableTransactions'
 import { Header } from '../../components/Header'
 
@@ -127,38 +127,6 @@ export function Transactions() {
     doc.save(`Transferencia_${transaction.name}.pdf`)
   }
 
-  const downloadCSV = () => {
-    try {
-      setLoading(true)
-      const csvContent = generateCSV(transactions)
-      const blob = new Blob([csvContent], { type: 'text/csv' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'transactions.csv'
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      toast({
-        title: 'Transações não encontrada...',
-        status: 'error',
-        duration: 1500,
-        isClosable: true,
-        position: 'top-right',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const generateCSV = (data: TransactionsProps[]) => {
-    const header = Object.keys(data[0]).join(',') + '\n'
-    const body = data
-      .map((transaction) => Object.values(transaction).join(',') + '\n')
-      .join('')
-    return header + body
-  }
-
   const getStatusLabel = (status: string) => {
     return status === 'outcome' ? 'saída' : 'entrada'
   }
@@ -172,7 +140,6 @@ export function Transactions() {
           onSearch={handleSearch}
           setSelectedStatus={handleSelectedStatusChange}
         />
-        <ButtonCv onClick={downloadCSV}>Download CSV</ButtonCv>
         <TableTransactions
           loading={loading}
           filteredTransactions={filteredTransactions}
