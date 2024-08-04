@@ -98,7 +98,7 @@ export function Transactions() {
     if (!transaction) {
       toast({
         title: 'Transação não encontrada.',
-        status: 'error',
+        colorScheme: 'red',
         duration: 1500,
         isClosable: true,
         position: 'top-right',

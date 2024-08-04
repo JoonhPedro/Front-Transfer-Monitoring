@@ -12,10 +12,19 @@ import {
   InputWrapper,
   Icon,
   IconPassword,
+  ButtonLogin,
+  LoginCheck,
 } from './styles'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../../../services/api'
-import { MdEmail, MdLock, MdVisibility, MdVisibilityOff } from 'react-icons/md'
+import {
+  MdEmail,
+  MdLock,
+  MdLogin,
+  MdVisibility,
+  MdVisibilityOff,
+} from 'react-icons/md'
+import { Spinner, useToast } from '@chakra-ui/react'
 
 const LoginComponent: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -24,6 +33,7 @@ const LoginComponent: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
+  const toast = useToast()
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -44,12 +54,23 @@ const LoginComponent: React.FC = () => {
       })
       localStorage.setItem('token', response.data.token)
       localStorage.setItem('user', JSON.stringify(response.data.user))
+      toast({
+        title: 'Login Realizado com Sucesso',
+        status: 'success',
+        duration: 1500,
+        isClosable: true,
+        position: 'top-right',
+      })
       navigate('/transactions')
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setError('Falha ao fazer login. Verifique seu email e senha.')
-      } else {
-        setError('Erro inesperado. Tente novamente.')
+        toast({
+          title: err.response?.data?.error,
+          colorScheme: 'red',
+          duration: 1500,
+          isClosable: true,
+          position: 'top-right',
+        })
       }
     } finally {
       setLoading(false)
@@ -89,13 +110,30 @@ const LoginComponent: React.FC = () => {
               required
             />
             <IconPassword onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
+              {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
             </IconPassword>
           </InputWrapper>
         </FormGroup>
         <ButtonContainer>
           <Button type="submit" disabled={loading}>
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? (
+              <>
+                <LoginCheck>
+                  Entrando...
+                  <Spinner
+                    color="green.500"
+                    thickness="1px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    size="xs"
+                  />
+                </LoginCheck>
+              </>
+            ) : (
+              <ButtonLogin>
+                <MdLogin /> Entrar
+              </ButtonLogin>
+            )}
           </Button>
           <a href="">Esqueceu a senha ?</a>
         </ButtonContainer>

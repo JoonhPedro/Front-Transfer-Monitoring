@@ -46,7 +46,6 @@ export const Input = styled.input`
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: #333;
   border-bottom: 3px solid #ccc;
   transition: 0.5s;
 
@@ -93,6 +92,20 @@ export const ButtonContainer = styled.div`
       opacity: 0.7;
     }
   }
+`
+
+export const ButtonLogin = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+`
+
+export const LoginCheck = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 `
 
 export const Error = styled.p`

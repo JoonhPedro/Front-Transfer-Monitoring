@@ -11,6 +11,7 @@ import {
   Logo,
   Overlay,
 } from './styles'
+import { useToast } from '@chakra-ui/react'
 
 interface UserProps {
   id: string
@@ -22,6 +23,7 @@ export function ModalUser() {
   const [users, setUsers] = useState<UserProps[]>([])
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+  const toast = useToast()
 
   useEffect(() => {
     async function loadUsers() {
@@ -56,6 +58,13 @@ export function ModalUser() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     navigate('/')
+    toast({
+      title: 'Desconectado com sucesso!',
+      status: 'success',
+      duration: 1500,
+      isClosable: true,
+      position: 'top-right',
+    })
   }
 
   return (

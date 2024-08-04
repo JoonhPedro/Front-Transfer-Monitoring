@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
-  width: 300px;
-  margin: 0 auto;
+  width: 400px;
+  margin: 15rem auto;
   padding: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -31,26 +31,70 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`
-
-export const Button = styled.button`
-  width: 100%;
-  padding: 0.5rem;
+  padding: 0.4rem 2rem;
   border: none;
   border-radius: 4px;
-  background-color: #007bff;
+  background: transparent;
+  border-bottom: 3px solid #ccc;
+  transition: 0.5s;
+
+  &:focus {
+    outline: none;
+    border-radius: 3px;
+    border-bottom: 3px solid ${(props) => props.theme['green-500']};
+    box-shadow:
+      0 0 0 0 ${(props) => props.theme['green-500']} inset,
+      0 0 5px 2px ${(props) => props.theme['green-500']};
+  }
+`
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+`
+export const Button = styled.button`
+  width: 100%;
+  padding: 0.5rem 0;
+  width: 35%;
+  border: 1px solid;
+  border-radius: 20px;
+  background-color: ${(props) => props.theme['green-500']};
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
+  transition: 0.3s;
+  position: relative;
   &:disabled {
-    background-color: #ccc;
+    background: transparent;
+    color: ${(props) => props.theme['green-300']};
+  }
+  &:hover {
+    background: transparent;
+    color: ${(props) => props.theme['green-300']};
   }
 `
 
 export const Error = styled.p`
   color: red;
   text-align: center;
+`
+
+export const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+`
+
+export const Icon = styled.div`
+  position: absolute;
+  left: 10px;
+  color: #999;
+  cursor: pointer;
+`
+
+export const IconPassword = styled.div`
+  position: absolute;
+  right: 10px;
+  color: #999;
+  cursor: pointer;
 `
