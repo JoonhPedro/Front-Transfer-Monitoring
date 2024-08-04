@@ -11,6 +11,8 @@ import {
   Header,
   Total,
   ButtonCv,
+  InputWrapper,
+  Icon,
 } from './styles'
 import { TableTransactions } from '../transactions/layout/components/TableTransactions'
 import { TransactionsProps } from '../transactions'
@@ -22,6 +24,7 @@ import { api } from '../../services/api'
 import DatePicker from 'react-datepicker'
 import { IoArrowBack } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
+import { MdOutlineDateRange } from 'react-icons/md'
 
 export function Relatorios() {
   const [transactions, setTransactions] = useState<TransactionsProps[]>([])
@@ -33,7 +36,7 @@ export function Relatorios() {
   >()
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [total, setTotal] = useState(0) // Novo estado para armazenar o valor total
+  const [total, setTotal] = useState(0)
   const toast = useToast()
   const [dateRange, setDateRange] = useState<{
     startDate: Date | null
@@ -95,7 +98,7 @@ export function Relatorios() {
     if (!transaction) {
       toast({
         title: 'Transação não encontrada.',
-        status: 'error',
+        colorScheme: 'red',
         duration: 1500,
         isClosable: true,
         position: 'top-right',
@@ -140,7 +143,7 @@ export function Relatorios() {
         if (filtered.length === 0) {
           toast({
             title: 'Não há transações nesse intervalo de datas.',
-            status: 'warning',
+            colorScheme: 'red',
             duration: 1500,
             isClosable: true,
             position: 'top-right',
@@ -156,7 +159,7 @@ export function Relatorios() {
       } else {
         toast({
           title: 'Por favor, selecione um intervalo de datas.',
-          status: 'warning',
+          colorScheme: 'red',
           duration: 1500,
           isClosable: true,
           position: 'top-right',
@@ -193,7 +196,7 @@ export function Relatorios() {
         toast({
           title:
             'Nenhuma transação encontrada para o usuário logado no intervalo de datas selecionado.',
-          status: 'warning',
+          colorScheme: 'red',
           duration: 1500,
           isClosable: true,
           position: 'top-right',
@@ -212,7 +215,7 @@ export function Relatorios() {
     } catch (error) {
       toast({
         title: 'Erro ao gerar o CSV.',
-        status: 'error',
+        colorScheme: 'red',
         duration: 1500,
         isClosable: true,
         position: 'top-right',
@@ -272,20 +275,30 @@ export function Relatorios() {
         </Header>
         <Container>
           <DatePickerContainer>
-            <Input>
-              <DatePicker
-                selected={dateRange.startDate}
-                onChange={handleStartDateChange}
-                placeholderText="Data Inicial"
-              />
-            </Input>
-            <Input>
-              <DatePicker
-                selected={dateRange.endDate}
-                onChange={handleEndDateChange}
-                placeholderText="Data Final"
-              />
-            </Input>
+            <InputWrapper>
+              <Input>
+                <DatePicker
+                  selected={dateRange.startDate}
+                  onChange={handleStartDateChange}
+                  placeholderText="Data Inicial"
+                />
+              </Input>
+              <Icon>
+                <MdOutlineDateRange />
+              </Icon>
+            </InputWrapper>
+            <InputWrapper>
+              <Input>
+                <DatePicker
+                  selected={dateRange.endDate}
+                  onChange={handleEndDateChange}
+                  placeholderText="Data Final"
+                />
+              </Input>
+              <Icon>
+                <MdOutlineDateRange />
+              </Icon>
+            </InputWrapper>
             <ButtonContainer>
               <Button onClick={handleSearch}>Visualizar</Button>
             </ButtonContainer>

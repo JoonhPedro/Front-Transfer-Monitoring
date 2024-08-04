@@ -1,6 +1,5 @@
 import { Spinner, Table, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import * as Tooltip from '@radix-ui/react-tooltip'
-import { Download } from 'phosphor-react'
 import PaginationComponent from '../../../../../components/Paginations'
 import { formatPrice } from '../../../../../format/price'
 import { TransactionsProps } from '../../../index'
@@ -10,6 +9,7 @@ import {
   TransactionsContainer,
   TransactionsTable,
 } from './styles'
+import { FaFileDownload } from 'react-icons/fa'
 
 export interface TableTransactionsProps {
   loading: boolean
@@ -106,14 +106,14 @@ export function TableTransactions({
                                 <button
                                   onClick={() => handlePdf(transaction.id)}
                                 >
-                                  <Download />
+                                  <FaFileDownload />
                                 </button>
                               </Tooltip.Trigger>
                               <Tooltip.Portal>
                                 <Tooltip.Content
                                   className="TooltipContent"
                                   sideOffset={10}
-                                  side="right"
+                                  side="top"
                                 >
                                   Download PDF
                                 </Tooltip.Content>
