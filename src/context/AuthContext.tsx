@@ -12,7 +12,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    !!localStorage.getItem('token'),
+    !!localStorage.getItem('token')
   )
 
   const login = (token: string) => {

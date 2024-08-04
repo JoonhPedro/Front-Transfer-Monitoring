@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 export const Container = styled.div`
   position: fixed;
@@ -9,8 +9,7 @@ export const Container = styled.div`
   right: 1%;
   border-radius: 50%;
   cursor: pointer;
-  svg{
-
+  svg {
   }
 `
 export const ModalOverlay = styled.div`
@@ -24,7 +23,7 @@ export const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
-`;
+`
 
 export const ModalContent = styled.div`
   background: white;
@@ -32,7 +31,7 @@ export const ModalContent = styled.div`
   border-radius: 8px;
   width: 300px;
   text-align: center;
-`;
+`
 
 export const CloseButton = styled.div`
   position: relative;

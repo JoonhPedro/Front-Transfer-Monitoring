@@ -7,13 +7,9 @@ import { ButtonSearch, SeachFormContainer, Select } from './styles'
 interface SearchFormProps {
   onSearch: (searchTerm: string) => void
   setSelectedStatus: (status: string) => void
-  // onDateRangeChange: (startDate: Date | null, endDate: Date | null) => void
 }
 
-export function SearchForm({
-  onSearch,
-  setSelectedStatus,
-}: SearchFormProps) {
+export function SearchForm({ onSearch, setSelectedStatus }: SearchFormProps) {
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

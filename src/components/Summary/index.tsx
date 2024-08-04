@@ -50,7 +50,7 @@ export function Summary() {
     return transactions
       .filter(
         (transaction) =>
-          transaction.status === 'income' && transaction.userId === userId,
+          transaction.status === 'income' && transaction.userId === userId
       )
       .reduce((total, transaction) => total + parseFloat(transaction.preco), 0)
   }
@@ -61,7 +61,7 @@ export function Summary() {
     return transactions
       .filter(
         (transaction) =>
-          transaction.status === 'outcome' && transaction.userId === userId,
+          transaction.status === 'outcome' && transaction.userId === userId
       )
       .reduce((total, transaction) => total + parseFloat(transaction.preco), 0)
   }

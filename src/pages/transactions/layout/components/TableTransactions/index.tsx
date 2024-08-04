@@ -43,7 +43,7 @@ export function TableTransactions({
   }
 
   const userTransactions = filteredTransactions.filter(
-    (transaction) => transaction.userId === userId,
+    (transaction) => transaction.userId === userId
   )
 
   return (
@@ -82,7 +82,9 @@ export function TableTransactions({
                         <Td>{transaction.metodo || ''}</Td>
                         <Td>
                           <PriceHighLight
-                            variant={transaction.status || (() => selectedStatus)}
+                            variant={
+                              transaction.status || (() => selectedStatus)
+                            }
                           >
                             R$
                             {transaction.status === 'outcome' ? ' -' : ' '}
@@ -94,14 +96,16 @@ export function TableTransactions({
                         </Td>
                         <Td width="10%">
                           {new Intl.DateTimeFormat('pt-BR').format(
-                            new Date(transaction.created_at || ''),
+                            new Date(transaction.created_at || '')
                           )}
                         </Td>
                         <Td>
                           <Tooltip.Provider>
                             <Tooltip.Root>
                               <Tooltip.Trigger asChild>
-                                <button onClick={() => handlePdf(transaction.id)}>
+                                <button
+                                  onClick={() => handlePdf(transaction.id)}
+                                >
                                   <Download />
                                 </button>
                               </Tooltip.Trigger>

@@ -5,7 +5,7 @@ import { Summary } from '../../components/Summary'
 import { formatPrice } from '../../format/price'
 import { api } from '../../services/api'
 import { SearchForm } from '../transactions/layout/components/SerchForm'
-import {  TransactionsContainer } from './style'
+import { TransactionsContainer } from './style'
 import { TableTransactions } from '../transactions/layout/components/TableTransactions'
 import { Header } from '../../components/Header'
 
@@ -48,7 +48,7 @@ export function Transactions() {
       const response = await api.get('/transactions')
       const sortedTransactions = response.data.sort(
         (a: TransactionsProps, b: TransactionsProps) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       )
       setTransactions(sortedTransactions)
       setFilteredTransactions(sortedTransactions)
@@ -65,7 +65,7 @@ export function Transactions() {
       const filtered = transactions.filter(
         (transaction) =>
           transaction.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          (!selectedStatus || transaction.status === selectedStatus),
+          (!selectedStatus || transaction.status === selectedStatus)
       )
       setFilteredTransactions(filtered)
     } catch (err) {
@@ -79,7 +79,7 @@ export function Transactions() {
     try {
       setLoading(true)
       setSelectedStatus(
-        status as 'income' | 'outcome' | (() => 'income' | 'outcome'),
+        status as 'income' | 'outcome' | (() => 'income' | 'outcome')
       )
     } catch (err) {
       console.error((err as Error).message)
@@ -116,12 +116,12 @@ export function Transactions() {
     doc.text(
       `Data de Transferência: ${new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.created_at))}`,
       10,
-      240,
+      240
     )
     doc.text(
       `Observações: ${transaction.observations || 'Sem observações'}`,
       10,
-      280,
+      280
     )
 
     doc.save(`Transferencia_${transaction.name}.pdf`)

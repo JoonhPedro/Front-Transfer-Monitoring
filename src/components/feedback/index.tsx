@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Container, ModalOverlay, ModalContent, CloseButton } from './styles';
-import { MdOutlineFeedback } from 'react-icons/md';
+import { useState } from 'react'
+import { Container, ModalOverlay, ModalContent, CloseButton } from './styles'
+import { MdOutlineFeedback } from 'react-icons/md'
 import { X } from 'phosphor-react'
 export function Feedback() {
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false)
 
   const handleModal = () => {
-    setOpenModal(!openModal);
-  };
+    setOpenModal(!openModal)
+  }
 
   return (
     <>
@@ -21,11 +21,13 @@ export function Feedback() {
             <h2>Feedback</h2>
             <p>Deixe seu feedback aqui!</p>
             <CloseButton>
-              <button onClick={handleModal}><X size={20}/></button>
+              <button onClick={handleModal}>
+                <X size={20} />
+              </button>
             </CloseButton>
           </ModalContent>
         </ModalOverlay>
       )}
     </>
-  );
+  )
 }

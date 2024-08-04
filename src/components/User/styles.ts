@@ -19,17 +19,15 @@ export const Logo = styled.div`
   display: flex;
   justify-content: center;
   padding-bottom: 1rem;
-  img{
-  width: 100px;
-  height: 100px;
-  background-color: red;
-  border-radius: 50%;
+  img {
+    width: 100px;
+    height: 100px;
+    background-color: gray;
+    border-radius: 50%;
   }
 `
 
-export const ContainerUser = styled.div`
-
-`
+export const ContainerUser = styled.div``
 
 export const Content = styled(Dialog.Content)`
   min-width: 32rem;
@@ -42,34 +40,34 @@ export const Content = styled(Dialog.Content)`
   left: 50%;
   transform: translate(-50%, -50%);
 
-    input {
-      border-radius: 6px;
-      border: 0;
-      background: ${(props) => props.theme['gray-900']};
-      color: ${(props) => props.theme['gray-300']};
-      padding: 1rem;
+  input {
+    border-radius: 6px;
+    border: 0;
+    background: ${(props) => props.theme['gray-900']};
+    color: ${(props) => props.theme['gray-300']};
+    padding: 1rem;
 
-      &::placeholder {
-        color: ${(props) => props.theme['gray-500']};
-      }
+    &::placeholder {
+      color: ${(props) => props.theme['gray-500']};
     }
+  }
 
-    button[type='submit'] {
-      height: 58px;
-      border: 0;
-      background: ${(props) => props.theme['green-500']};
-      color: ${(props) => props.theme.white};
-      font-weight: bold;
-      padding: 0 1.25rem;
-      border-radius: 6px;
-      margin-top: 1.5rem;
-      cursor: pointer;
+  button[type='submit'] {
+    height: 58px;
+    border: 0;
+    background: ${(props) => props.theme['green-500']};
+    color: ${(props) => props.theme.white};
+    font-weight: bold;
+    padding: 0 1.25rem;
+    border-radius: 6px;
+    margin-top: 1.5rem;
+    cursor: pointer;
 
-      &:hover {
-        background: ${(props) => props.theme['green-700']};
-        transition: background-color 0.2s;
-      }
+    &:hover {
+      background: ${(props) => props.theme['green-700']};
+      transition: background-color 0.2s;
     }
+  }
   Link {
     text-align: center;
   }

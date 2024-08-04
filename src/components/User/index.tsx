@@ -9,7 +9,7 @@ import {
   ContainerUser,
   Content,
   Logo,
-  Overlay
+  Overlay,
 } from './styles'
 
 interface UserProps {
@@ -50,11 +50,9 @@ export function ModalUser() {
       return
     }
   }
-  const filterUser = users.find(
-    (user) => user.id === userId,
-  )
+  const filterUser = users.find((user) => user.id === userId)
 
-  function handleLogout(){
+  function handleLogout() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     navigate('/')
@@ -69,24 +67,24 @@ export function ModalUser() {
           <X size={24} />
         </CloseButton>
         <Container>
-        <Logo>
-          <img src="" alt="" />
-        </Logo>
-        <ContainerUser>
-        {filterUser && (
-          <>
-          {loading ? (
-            <p>Carregando...</p>
-          ) : (
-            <>
-            <p>{filterUser.name || ''}</p>
-            <p>{filterUser.email || ''}</p>
-            </>
-          )}
-          </>
-        )}
-        </ContainerUser>
-       </Container>
+          <Logo>
+            <img src="" alt="" />
+          </Logo>
+          <ContainerUser>
+            {filterUser && (
+              <>
+                {loading ? (
+                  <p>Carregando...</p>
+                ) : (
+                  <>
+                    <p>{filterUser.name || ''}</p>
+                    <p>{filterUser.email || ''}</p>
+                  </>
+                )}
+              </>
+            )}
+          </ContainerUser>
+        </Container>
         <button onClick={handleLogout}>Sair</button>
       </Content>
     </Dialog.Portal>

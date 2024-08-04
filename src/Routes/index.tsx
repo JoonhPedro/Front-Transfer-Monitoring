@@ -5,6 +5,7 @@ import LoginComponent from '../pages/Acess/login'
 import SignUpComponent from '../pages/Acess/signUp'
 import PrivateRoute from '../context/PrivateRoute'
 import { Login } from '../components/Login'
+import { NotFoundPage } from '../components/NotFoundPage'
 
 export function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ export function AppRoutes() {
           <Route path="/relatorios" element={<Relatorios />} />
           <Route path="/transactions" element={<Transactions />} />
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   )

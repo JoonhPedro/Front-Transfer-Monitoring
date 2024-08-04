@@ -15,5 +15,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </ChakraProvider>
       </AuthProvider>
     </ThemeProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 )

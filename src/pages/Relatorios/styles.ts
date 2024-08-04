@@ -12,7 +12,7 @@ export const Container = styled.div`
 export const ContainerTable = styled.div`
   height: auto;
   max-width: 1128px;
-  margin: 50px auto;
+  margin: 40px auto;
   border-radius: 20px;
   padding: 0.5rem 1.5rem 0;
   background: ${(props) => props.theme['gray-700']};
@@ -20,8 +20,8 @@ export const ContainerTable = styled.div`
 
 export const Header = styled.div`
   padding: 1.5rem 2.5rem 0;
-  svg{
-    color: ${(props) => props.theme['green-500']} ;
+  svg {
+    color: ${(props) => props.theme['green-500']};
   }
 `
 
@@ -99,30 +99,23 @@ export const NoData = styled.div`
 `
 
 export const ButtonCv = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
   border: 0;
-  padding: 1.07rem;
+  padding: 0.7rem;
+  background: transparent;
+  border: 1px solid ${(props) => props.theme['green-300']};
+  color: ${(props) => props.theme['green-300']};
   font-weight: bold;
   border-radius: 6px;
-  position: relative;
-  left: 58.5rem;
-  border: 1px solid ${(props) => props.theme['green-300']};
-  bottom: 3.43rem;
-  background: ${(props) => props.theme['green-500']};
-  border-color: ${(props) => props.theme['green-500']};
-  color: ${(props) => props.theme.white};
-  transition:
-    background-color 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-  cursor: pointer;
 
   &:hover {
-    background: transparent;
-    color: ${(props) => props.theme['green-300']};
+    background: ${(props) => props.theme['green-500']};
+    border-color: ${(props) => props.theme['green-500']};
+    color: ${(props) => props.theme.white};
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+    cursor: pointer;
   }
 `
 export const Input = styled.div`
@@ -138,4 +131,14 @@ export const Input = styled.div`
       color: ${(props) => props.theme['gray-500']};
     }
   }
+`
+
+export const Total = styled.div`
+  padding: 0.6rem 1rem;
+  margin: 0 1rem;
+  width: 130px;
+  background: ${(props) => props.theme['gray-900']};
+  border-radius: 10px;
+  border: 1px solid;
+  opacity: 0.8;
 `
