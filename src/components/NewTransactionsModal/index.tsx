@@ -37,7 +37,7 @@ export function NewTransactionsModal() {
       toast({
         title: 'Erro.',
         description: 'Todos os campos obrigatórios devem ser preenchidos.',
-        status: 'error',
+        colorScheme: 'red',
         duration: 1500,
         isClosable: true,
         position: 'top-right',
@@ -57,7 +57,7 @@ export function NewTransactionsModal() {
         toast({
           title: 'Erro.',
           description: 'Erro ao processar dados do usuário.',
-          status: 'error',
+          colorScheme: 'red',
           duration: 1500,
           isClosable: true,
           position: 'top-right',
@@ -70,7 +70,7 @@ export function NewTransactionsModal() {
       toast({
         title: 'Erro.',
         description: 'Usuário não está autenticado.',
-        status: 'error',
+        colorScheme: 'red',
         duration: 1500,
         isClosable: true,
         position: 'top-right',
@@ -97,11 +97,12 @@ export function NewTransactionsModal() {
         isClosable: true,
         position: 'top-right',
       })
+      location.reload()
     } catch (err) {
       toast({
         title: 'Erro.',
         description: 'Ocorreu um erro ao tentar cadastrar a transação.',
-        status: 'error',
+        colorScheme: 'red',
         duration: 1500,
         isClosable: true,
         position: 'top-right',

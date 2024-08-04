@@ -130,15 +130,32 @@ export const Input = styled.div`
     &::placeholder {
       color: ${(props) => props.theme['gray-500']};
     }
+    padding: 0.7rem 2rem;
   }
 `
 
 export const Total = styled.div`
   padding: 0.6rem 1rem;
   margin: 0 1rem;
-  width: 130px;
+  width: 200px;
   background: ${(props) => props.theme['gray-900']};
   border-radius: 10px;
   border: 1px solid;
   opacity: 0.8;
+`
+
+export const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+`
+
+export const Icon = styled.div`
+  position: absolute;
+  left: 10px;
+  color: #999;
+  cursor: pointer;
+  svg {
+    color: ${(props) => props.theme['green-500']};
+  }
 `
