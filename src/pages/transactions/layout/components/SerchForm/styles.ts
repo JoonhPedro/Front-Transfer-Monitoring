@@ -3,6 +3,7 @@ import styled from 'styled-components'
 export const SeachFormContainer = styled.form`
   display: flex;
   gap: 1rem;
+  width: auto;
 
   input {
     flex: 2;
@@ -50,7 +51,6 @@ export const Select = styled.select`
   padding: 1rem;
   background: transparent;
   border: none;
-  color: ${(props) => props.theme['green-300']};
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;

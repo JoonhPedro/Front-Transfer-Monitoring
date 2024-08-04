@@ -1,7 +1,25 @@
 {
-  "extends": "@rocketseat/eslint-config/react",
-    "rules": {
-      "new-cap": ["error", { "newIsCap": true }]
-    }
-  
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "@rocketseat/eslint-config/react",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "new-cap": ["error", { "newIsCap": true }],
+    "prettier/prettier": [
+      "error",
+      {
+        "semi": false,
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "printWidth": 80
+      }
+    ]
+  }
 }
