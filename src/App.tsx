@@ -1,11 +1,13 @@
-import { Transactions } from './pages/transactions'
 import { GlobalStyle } from './styles/global'
+import { AppRoutes } from './Routes/index'
+import { Feedback } from './components/feedback'
 
 export function App() {
   return (
     <>
       <GlobalStyle />
-      <Transactions />
+      <AppRoutes />
+      <Feedback />
     </>
   )
 }
