@@ -281,6 +281,7 @@ export function Relatorios() {
                   selected={dateRange.startDate}
                   onChange={handleStartDateChange}
                   placeholderText="Data Inicial"
+                  required
                 />
               </Input>
               <Icon>
@@ -293,6 +294,7 @@ export function Relatorios() {
                   selected={dateRange.endDate}
                   onChange={handleEndDateChange}
                   placeholderText="Data Final"
+                  required
                 />
               </Input>
               <Icon>

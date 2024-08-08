@@ -63,18 +63,32 @@ const LoginComponent: React.FC = () => {
       })
       navigate('/transactions')
     } catch (err) {
+      console.log(axios.isAxiosError(err))
       if (axios.isAxiosError(err)) {
+        console.log(err.cause?.message === undefined || err.message)
         toast({
-          title: err.response?.data?.error,
+          // title: (err as Error).message,
+          title: err?.cause?.message === undefined || err.message,
           colorScheme: 'red',
           duration: 1500,
           isClosable: true,
           position: 'top-right',
         })
       }
+      return
     } finally {
       setLoading(false)
     }
+  }
+
+  const forgotPassword = () => {
+    navigate('/forgotPassoword')
+    toast({
+      title: 'Serviço Indisponivel no momento',
+      colorScheme: 'red',
+      duration: 1500,
+      position: 'top-right',
+    })
   }
 
   return (
@@ -135,7 +149,7 @@ const LoginComponent: React.FC = () => {
               </ButtonLogin>
             )}
           </Button>
-          <a href="">Esqueceu a senha ?</a>
+          <p onClick={forgotPassword}>Esqueceu a senha ?</p>
         </ButtonContainer>
         <Register>
           <a>

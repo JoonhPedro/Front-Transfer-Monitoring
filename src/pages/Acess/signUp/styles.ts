@@ -12,6 +12,17 @@ export const Container = styled.div`
   align-items: center;
 `
 
+export const Header = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 140px;
+  svg {
+    position: relative;
+    bottom: 10px;
+    color: ${(props) => props.theme['green-300']};
+  }
+`
 export const Title = styled.h2`
   margin-bottom: 1rem;
 `
@@ -35,7 +46,7 @@ export const Input = styled.input`
   border: none;
   border-radius: 4px;
   background: transparent;
-  border-bottom: 3px solid #ccc;
+  border-bottom: 2px solid #ccc;
   transition: 0.5s;
 
   &:focus {

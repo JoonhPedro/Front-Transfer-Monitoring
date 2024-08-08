@@ -4,14 +4,14 @@ import { Relatorios } from '../pages/Relatorios'
 import LoginComponent from '../pages/Acess/login'
 import SignUpComponent from '../pages/Acess/signUp'
 import PrivateRoute from '../context/PrivateRoute'
-import { Login } from '../components/Login'
+import { FourTransactions } from '../components/FourTransactions'
 import { NotFoundPage } from '../components/NotFoundPage'
 
 export function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<FourTransactions />} />
         <Route path="/Login" element={<LoginComponent />} />
         <Route path="/signUp" element={<SignUpComponent />} />
         <Route element={<PrivateRoute />}>

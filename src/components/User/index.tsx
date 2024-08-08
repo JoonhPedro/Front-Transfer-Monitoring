@@ -9,6 +9,7 @@ import {
   ContainerUser,
   Content,
   Logo,
+  NameUserLogo,
   Overlay,
 } from './styles'
 import { useToast } from '@chakra-ui/react'
@@ -67,6 +68,13 @@ export function ModalUser() {
     })
   }
 
+  const logoUserName = filterUser?.name
+    ?.split(' ')
+    .slice(0, 2)
+    .map((item) => item.at(0))
+    .join('')
+    .toLocaleUpperCase()
+
   return (
     <Dialog.Portal>
       <Overlay />
@@ -77,7 +85,9 @@ export function ModalUser() {
         </CloseButton>
         <Container>
           <Logo>
-            <img src="" alt="" />
+            <div>
+              <NameUserLogo>{logoUserName}</NameUserLogo>{' '}
+            </div>
           </Logo>
           <ContainerUser>
             {filterUser && (
