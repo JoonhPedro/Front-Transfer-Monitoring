@@ -7,6 +7,3 @@ export function formatDate(date: Date): string {
 
   return `${day} ${month} ${year} às ${hours}:${minutes}`
 }
-
-const exampleDate = new Date()
-console.log(formatDate(exampleDate))

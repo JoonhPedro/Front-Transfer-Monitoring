@@ -46,6 +46,9 @@ export function TableTransactions({
     (transaction) => transaction.userId === userId
   )
 
+  const transactionsPerPage = 5
+  const startSequence = (currentPage - 1) * transactionsPerPage + 1
+
   return (
     <>
       <TransactionsContainer>
@@ -65,20 +68,25 @@ export function TableTransactions({
               <Table variant={'gray'}>
                 <Thead>
                   <Tr>
+                    <Th>Sequence</Th>
                     <Th>Transferência</Th>
                     <Th>Método</Th>
                     <Th>Preço</Th>
-                    <Th>Status</Th>
+                    <Th>Categoria</Th>
                     <Th isNumeric>Data</Th>
                     <Th>Ações</Th>
                   </Tr>
                 </Thead>
                 <tbody>
                   {userTransactions
-                    .slice((currentPage - 1) * 5, currentPage * 5)
-                    .map((transaction) => (
+                    .slice(
+                      (currentPage - 1) * transactionsPerPage,
+                      currentPage * transactionsPerPage
+                    )
+                    .map((transaction, index) => (
                       <Tr key={transaction.id}>
-                        <Td width="20%">{transaction.name || ''}</Td>
+                        <Td>{startSequence + index}</Td>
+                        <Td width="10%">{transaction.name || ''}</Td>
                         <Td>{transaction.metodo || ''}</Td>
                         <Td>
                           <PriceHighLight
@@ -88,12 +96,12 @@ export function TableTransactions({
                           >
                             R$
                             {transaction.status === 'outcome' ? ' -' : ' '}
-                            {formatPrice(parseFloat(transaction.preco || ''))}
+                            {formatPrice(
+                              parseFloat(transaction.preco || 'NaN')
+                            )}
                           </PriceHighLight>
                         </Td>
-                        <Td>
-                          <p>{transaction.categoria}</p>
-                        </Td>
+                        <Td>{transaction.categoria}</Td>
                         <Td width="10%">
                           {new Intl.DateTimeFormat('pt-BR').format(
                             new Date(transaction.created_at || '')
@@ -127,7 +135,9 @@ export function TableTransactions({
               </Table>
               <PaginationComponent
                 currentPage={currentPage}
-                totalPages={Math.ceil(userTransactions.length / 5)}
+                totalPages={Math.ceil(
+                  userTransactions.length / transactionsPerPage
+                )}
                 handlePagination={handlePagination}
               />
             </>
