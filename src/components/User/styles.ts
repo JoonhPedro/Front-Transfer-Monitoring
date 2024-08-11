@@ -7,6 +7,7 @@ export const Overlay = styled(Dialog.Overlay)`
   height: 100vh;
   inset: 0;
   background: rgb(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
 `
 
 export const Container = styled.div`

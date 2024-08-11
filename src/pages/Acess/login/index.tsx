@@ -65,10 +65,9 @@ const LoginComponent: React.FC = () => {
     } catch (err) {
       console.log(axios.isAxiosError(err))
       if (axios.isAxiosError(err)) {
-        console.log(err.cause?.message === undefined || err.message)
+        // console.log(err.message)
         toast({
-          // title: (err as Error).message,
-          title: err?.cause?.message === undefined || err.message,
+          title: err?.message,
           colorScheme: 'red',
           duration: 1500,
           isClosable: true,

@@ -20,11 +20,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setIsAuthenticated(true)
   }
   const logout = setInterval(() => {
-    console.log('Mensagem repetida a cada 1 hora!')
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     setIsAuthenticated(false)
-  }, 36000)
+  }, 360000)
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
