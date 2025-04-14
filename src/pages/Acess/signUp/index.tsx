@@ -77,7 +77,6 @@ const SignUpComponent: React.FC = () => {
       return response
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log()
         toast({
           title: err.response?.data?.error,
           status: 'warning',

@@ -1,7 +1,3 @@
-export function Toast(){
-  return (
-    <>
-    
-    </>
-  )
+export function Toast() {
+  return <></>
 }

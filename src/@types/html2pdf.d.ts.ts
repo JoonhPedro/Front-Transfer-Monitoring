@@ -1,6 +1,4 @@
-// src/html2pdf.d.ts
 declare module 'html2pdf.js' {
-  // Definições de tipo simplificadas
   interface Html2PdfOptions {
     margin?: number | string
     filename?: string

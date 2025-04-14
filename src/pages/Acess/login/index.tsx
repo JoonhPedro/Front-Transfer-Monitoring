@@ -63,9 +63,7 @@ const LoginComponent: React.FC = () => {
       })
       navigate('/transactions')
     } catch (err) {
-      console.log(axios.isAxiosError(err))
       if (axios.isAxiosError(err)) {
-        // console.log(err.message)
         toast({
           title: err?.message,
           colorScheme: 'red',
