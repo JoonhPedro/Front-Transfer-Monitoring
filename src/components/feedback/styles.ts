@@ -19,6 +19,7 @@ export const ModalOverlay = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,7 +27,7 @@ export const ModalOverlay = styled.div`
 `
 
 export const ModalContent = styled.div`
-  background: white;
+  background: ${(props) => props.theme['gray-800']};
   padding: 20px;
   border-radius: 8px;
   width: 300px;

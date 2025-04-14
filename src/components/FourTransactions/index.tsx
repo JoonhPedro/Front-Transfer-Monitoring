@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Button, Container, Logo } from './styles'
 import logo from '../../assets/logo.svg'
-export function Login() {
+export function FourTransactions() {
   return (
     <>
       <Container>

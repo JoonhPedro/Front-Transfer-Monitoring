@@ -6,6 +6,7 @@ import {
   Container,
   Form,
   FormGroup,
+  Header,
   Icon,
   IconPassword,
   Input,
@@ -22,6 +23,7 @@ import {
   MdVisibilityOff,
 } from 'react-icons/md'
 import { useToast } from '@chakra-ui/react'
+import { IoArrowBack } from 'react-icons/io5'
 
 const SignUpComponent: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -88,9 +90,18 @@ const SignUpComponent: React.FC = () => {
     }
   }
 
+  const handleBack = () => {
+    navigate('/login')
+  }
+
   return (
     <Container>
-      <Title>Cadastro</Title>
+      <Header>
+        <button onClick={handleBack}>
+          <IoArrowBack size={20} />
+        </button>
+        <Title>Cadastro</Title>
+      </Header>
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <InputWrapper>

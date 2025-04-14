@@ -46,7 +46,7 @@ export const Input = styled.input`
   border: none;
   border-radius: 4px;
   background: transparent;
-  border-bottom: 3px solid #ccc;
+  border-bottom: 2px solid #ccc;
   transition: 0.5s;
 
   &:focus {
@@ -86,8 +86,9 @@ export const ButtonContainer = styled.div`
   gap: 2rem;
   padding: 0.5rem 0;
 
-  a {
+  p {
     color: #045880;
+    cursor: pointer;
     &:hover {
       opacity: 0.7;
     }

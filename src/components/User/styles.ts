@@ -1,5 +1,4 @@
 import * as Dialog from '@radix-ui/react-dialog'
-import * as RadioGroup from '@radix-ui/react-radio-group'
 import styled from 'styled-components'
 
 export const Overlay = styled(Dialog.Overlay)`
@@ -8,6 +7,7 @@ export const Overlay = styled(Dialog.Overlay)`
   height: 100vh;
   inset: 0;
   background: rgb(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
 `
 
 export const Container = styled.div`
@@ -19,12 +19,24 @@ export const Logo = styled.div`
   display: flex;
   justify-content: center;
   padding-bottom: 1rem;
-  img {
+
+  div {
     width: 100px;
     height: 100px;
-    background-color: gray;
+    background-color: ${(props) => props.theme['gray-600']};
     border-radius: 50%;
   }
+`
+
+export const NameUserLogo = styled.h1`
+  display: flex;
+  outline: none;
+  color: ${(props) => props.theme['green-300']};
+  width: 100px;
+  height: 100px;
+  font-size: 50px;
+  align-items: center;
+  justify-content: center;
 `
 
 export const ContainerUser = styled.div``
@@ -51,27 +63,8 @@ export const Content = styled(Dialog.Content)`
       color: ${(props) => props.theme['gray-500']};
     }
   }
-
-  button[type='submit'] {
-    height: 58px;
-    border: 0;
-    background: ${(props) => props.theme['green-500']};
-    color: ${(props) => props.theme.white};
-    font-weight: bold;
-    padding: 0 1.25rem;
-    border-radius: 6px;
-    margin-top: 1.5rem;
-    cursor: pointer;
-
-    &:hover {
-      background: ${(props) => props.theme['green-700']};
-      transition: background-color 0.2s;
-    }
-  }
-  Link {
-    text-align: center;
-  }
 `
+
 export const CloseButton = styled(Dialog.Close)`
   position: absolute;
   background: transparent;
@@ -81,11 +74,4 @@ export const CloseButton = styled(Dialog.Close)`
   line-height: 0;
   cursor: pointer;
   color: ${(props) => props.theme['gray-500']};
-`
-
-export const TransactionType = styled(RadioGroup.Root)`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-top: 0.5rem;
 `

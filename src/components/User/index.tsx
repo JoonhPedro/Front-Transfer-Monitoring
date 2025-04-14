@@ -2,13 +2,13 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { X } from 'phosphor-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { api } from '../../services/api'
 import {
   CloseButton,
   Container,
   ContainerUser,
   Content,
   Logo,
+  NameUserLogo,
   Overlay,
 } from './styles'
 import { useToast } from '@chakra-ui/react'
@@ -20,39 +20,22 @@ interface UserProps {
 }
 
 export function ModalUser() {
-  const [users, setUsers] = useState<UserProps[]>([])
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<UserProps | null>(null)
   const navigate = useNavigate()
   const toast = useToast()
 
   useEffect(() => {
-    async function loadUsers() {
+    const userJson = localStorage.getItem('user')
+
+    if (userJson) {
       try {
-        const response = await api.get('/users')
-        setUsers(response.data)
-      } catch (err) {
-        console.error((err as Error).message)
-      } finally {
-        setLoading(false)
+        const parsedUser = JSON.parse(userJson)
+        setUser(parsedUser)
+      } catch (error) {
+        console.error('Erro ao analisar informação do usuário:', error)
       }
     }
-
-    loadUsers()
   }, [])
-
-  const userJson = localStorage.getItem('user')
-  let userId: string | null = null
-
-  if (userJson) {
-    try {
-      const user = JSON.parse(userJson)
-      userId = user.id
-    } catch (error) {
-      console.error('Erro ao analisar o JSON do usuário:', error)
-      return
-    }
-  }
-  const filterUser = users.find((user) => user.id === userId)
 
   function handleLogout() {
     localStorage.removeItem('token')
@@ -67,34 +50,41 @@ export function ModalUser() {
     })
   }
 
+  const logoUserName = user?.name
+    ?.split(' ')
+    .slice(0, 2)
+    .map((item) => item.at(0))
+    .join('')
+    .toUpperCase()
+
   return (
     <Dialog.Portal>
       <Overlay />
       <Content>
-        <Dialog.Title>Usuários</Dialog.Title>
+        <Dialog.Title>Perfil</Dialog.Title>
         <CloseButton>
           <X size={24} />
         </CloseButton>
         <Container>
           <Logo>
-            <img src="" alt="" />
+            <div>
+              <NameUserLogo>{logoUserName}</NameUserLogo>
+            </div>
           </Logo>
           <ContainerUser>
-            {filterUser && (
+            {user ? (
               <>
-                {loading ? (
-                  <p>Carregando...</p>
-                ) : (
-                  <>
-                    <p>{filterUser.name || ''}</p>
-                    <p>{filterUser.email || ''}</p>
-                  </>
-                )}
+                <p>{user.name || ''}</p>
+                <p>{user.email || ''}</p>
               </>
+            ) : (
+              <p>Carregando...</p>
             )}
           </ContainerUser>
         </Container>
-        <button onClick={handleLogout}>Sair</button>
+        <button onClick={handleLogout} disabled={!user}>
+          {user ? 'Sair' : 'Carregando...'}
+        </button>
       </Content>
     </Dialog.Portal>
   )

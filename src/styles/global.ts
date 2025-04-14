@@ -12,7 +12,7 @@ export const GlobalStyle = createGlobalStyle`
         box-shadow: 0 8 0 2px ${(props) => props.theme['gray-500']};
     }
     .chakra-ui-light{
-        background: ${(props) => props.theme['gray-800']};
+        background: ${(props) => props.theme['gray-900']};
         color: ${(props) => props.theme['gray-300']};
          -webkit-font-smoothing: antialiased;
     }
