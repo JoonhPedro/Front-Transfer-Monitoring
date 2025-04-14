@@ -1,3 +1,13 @@
+import { useEffect, useState } from 'react'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { useToast } from '@chakra-ui/react'
+import jsPDF from 'jspdf'
+import { formatPrice } from '../../format/price'
+import { api } from '../../services/api'
+import { IoArrowBack } from 'react-icons/io5'
+import { useNavigate } from 'react-router-dom'
+import { MdOutlineDateRange } from 'react-icons/md'
 import {
   ButtonContainer,
   Container,
@@ -16,24 +26,13 @@ import {
 } from './styles'
 import { TableTransactions } from '../transactions/layout/components/TableTransactions'
 import { TransactionsProps } from '../transactions'
-import { useEffect, useState } from 'react'
-import { useToast } from '@chakra-ui/react'
-import jsPDF from 'jspdf'
-import { formatPrice } from '../../format/price'
-import { api } from '../../services/api'
-import DatePicker from 'react-datepicker'
-import { IoArrowBack } from 'react-icons/io5'
-import { useNavigate } from 'react-router-dom'
-import { MdOutlineDateRange } from 'react-icons/md'
 
 export function Relatorios() {
   const [transactions, setTransactions] = useState<TransactionsProps[]>([])
   const [filteredTransactions, setFilteredTransactions] = useState<
     TransactionsProps[]
   >([])
-  const [selectedStatus, setSelectedStatus] = useState<
-    'income' | 'outcome' | (() => 'income' | 'outcome')
-  >()
+  const [selectedStatus, setSelectedStatus] = useState<'income' | 'outcome'>()
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [total, setTotal] = useState(0)
@@ -150,11 +149,23 @@ export function Relatorios() {
           })
         } else {
           setFilteredTransactions(filtered)
-          const totalValue = filtered.reduce(
-            (acc, transaction) => acc + parseFloat(transaction.preco),
+          const totalIncome = filtered.reduce(
+            (acc, transaction) =>
+              acc +
+              (transaction.status === 'income'
+                ? parseFloat(transaction.preco)
+                : 0),
             0
           )
-          setTotal(totalValue)
+          const totalOutcome = filtered.reduce(
+            (acc, transaction) =>
+              acc +
+              (transaction.status === 'outcome'
+                ? parseFloat(transaction.preco)
+                : 0),
+            0
+          )
+          setTotal(totalIncome - totalOutcome)
         }
       } else {
         toast({
@@ -241,19 +252,11 @@ export function Relatorios() {
     navigate('/transactions')
   }
 
-  const handleDateRangeChange = (
-    startDate: Date | null,
-    endDate: Date | null
-  ) => {
-    setDateRange({ startDate, endDate })
-  }
-
   const handleStartDateChange = (date: Date | null) => {
     setDateRange((prevDateRange) => ({
       ...prevDateRange,
       startDate: date,
     }))
-    handleDateRangeChange(date, dateRange.endDate)
   }
 
   const handleEndDateChange = (date: Date | null) => {
@@ -261,7 +264,6 @@ export function Relatorios() {
       ...prevDateRange,
       endDate: date,
     }))
-    handleDateRangeChange(dateRange.startDate, date)
   }
 
   return (
@@ -281,6 +283,8 @@ export function Relatorios() {
                   selected={dateRange.startDate}
                   onChange={handleStartDateChange}
                   placeholderText="Data Inicial"
+                  dateFormat="dd/MM/yyyy"
+                  required
                 />
               </Input>
               <Icon>
@@ -293,6 +297,8 @@ export function Relatorios() {
                   selected={dateRange.endDate}
                   onChange={handleEndDateChange}
                   placeholderText="Data Final"
+                  dateFormat="dd/MM/yyyy"
+                  required
                 />
               </Input>
               <Icon>

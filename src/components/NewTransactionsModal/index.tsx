@@ -189,7 +189,7 @@ export function NewTransactionsModal() {
               </TransactionTypeButton>
             </TransactionType>
             <button type="submit">Cadastrar</button>
-            <Checkbox required>
+            <Checkbox>
               <p>Li e estou de acordo com a Política de Privacidade</p>
             </Checkbox>
             <Dialog.Root>

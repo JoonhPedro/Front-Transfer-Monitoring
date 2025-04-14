@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useToast } from '@chakra-ui/react'
-import jsPDF from 'jspdf'
 import { Summary } from '../../components/Summary'
-import { formatPrice } from '../../format/price'
 import { api } from '../../services/api'
 import { SearchForm } from '../transactions/layout/components/SerchForm'
 import { TransactionsContainer } from './style'
 import { TableTransactions } from '../transactions/layout/components/TableTransactions'
 import { Header } from '../../components/Header'
+import html2pdf from 'html2pdf.js'
+import { formatDate, formatPrice } from '../../format'
 
 export interface TransactionsProps {
   id: string
@@ -28,7 +28,7 @@ export function Transactions() {
     TransactionsProps[]
   >([])
   const [selectedStatus, setSelectedStatus] = useState<
-    'income' | 'outcome' | (() => 'income' | 'outcome')
+    'income' | 'outcome' | undefined
   >()
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
@@ -78,9 +78,7 @@ export function Transactions() {
   const handleSelectedStatusChange = (status: string) => {
     try {
       setLoading(true)
-      setSelectedStatus(
-        status as 'income' | 'outcome' | (() => 'income' | 'outcome')
-      )
+      setSelectedStatus(status as 'income' | 'outcome')
     } catch (err) {
       console.error((err as Error).message)
     } finally {
@@ -92,7 +90,7 @@ export function Transactions() {
     setCurrentPage(page)
   }
 
-  function handlePdf(id: string) {
+  const generatePDF = (id: string) => {
     const transaction = transactions.find((item) => item.id === id)
 
     if (!transaction) {
@@ -105,26 +103,45 @@ export function Transactions() {
       })
       return
     }
-    // eslint-disable-next-line new-cap
-    const doc = new jsPDF('p', 'pt')
 
-    doc.text(`Nome da Transferência: ${transaction.name}`, 10, 40)
-    doc.text(`Categoria: ${transaction.categoria}`, 10, 80)
-    doc.text(`Valor: R$ ${formatPrice(parseFloat(transaction.preco))}`, 10, 120)
-    doc.text(`Método de Pagamento: ${transaction.metodo}`, 10, 160)
-    doc.text(`Status: ${getStatusLabel(transaction.status)}`, 10, 200)
-    doc.text(
-      `Data de Transferência: ${new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.created_at))}`,
-      10,
-      240
-    )
-    doc.text(
-      `Observações: ${transaction.observations || 'Sem observações'}`,
-      10,
-      280
-    )
+    const pdfContent = `
+   <div style="font-family: Arial, sans-serif; margin: 20px; padding: 20px; border-radius: 8px; width: 600px; border: 1px solid black; background-color: white;">
+      <h1 style="color: #000000; text-align: center; text-decoration: none; padding-bottom: 1rem;">Comprovante de Transação</h1>
+      <div style="margin-bottom: 20px;">
+        <p style="color: #000000;"><strong>Comprovante gerado em </strong></p>
+        <p style="color: #333; padding-bottom: 1rem;"> ${formatDate(new Date())} </p>
+        <h3 style="color: #000000;"><strong>Valor</strong></h3>
+        <h2 style="color: #000000;"> R$ ${formatPrice(parseFloat(transaction.preco))}</h2>
+        <h3 style="padding: 1rem 0; color: #000000;" ><strong>Informaçäo de Transferência</strong></h3>
+        <p style="color: #000000;";><strong>Nome da Transferência</strong></p>
+        <p style="color: #333; padding-bottom: 1rem;">${transaction.name}</p>
+        <p style="color: #000000;"><strong>Categoria</strong></p>
+        <p style="color: #333; padding-bottom: 1rem;">${transaction.categoria}</p>
+        <p style="color: #000000;"><strong>Método de Pagamento</strong></p>
+        <p style="color: #333; padding-bottom: 1rem;">${transaction.metodo}</p>
+        <p style="color: #000000;"><strong>Status</strong></p>
+        <p style="color: #333; padding-bottom: 1rem;">${getStatusLabel(transaction.status)}</p>
+        <p style="color: #000000;"><strong>Data de Transferência</strong></p>
+        <p style="color: #333; padding-bottom: 1rem;">${new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.created_at))}</p>
+        <p style="color: #000000;"><strong>Observações</strong></p>
+        <p style="color: #333; padding-bottom: 1rem;">${transaction.observations || 'Sem observações'}</p>
+      </div>
+      <footer style="text-align: center; margin-top: 20px; font-size: 0.9em; color: #666;">
+        <p>Emitido por Four transaction</p>
+      </footer>
+    </div>
+    `
 
-    doc.save(`Transferencia_${transaction.name}.pdf`)
+    const element = document.createElement('div')
+    element.innerHTML = pdfContent
+    document.body.appendChild(element)
+
+    html2pdf()
+      .from(element)
+      .save(`Transferencia_${transaction.name}.pdf`)
+      .then(() => {
+        document.body.removeChild(element)
+      })
   }
 
   const getStatusLabel = (status: string) => {
@@ -147,7 +164,7 @@ export function Transactions() {
           totalPages={Math.ceil(filteredTransactions.length / 5)}
           handlePagination={handlePagination}
           selectedStatus={handleSelectedStatusChange}
-          handlePdf={handlePdf}
+          handlePdf={generatePDF}
         />
       </TransactionsContainer>
     </>

@@ -7,13 +7,17 @@ import {
 
 import * as Dialog from '@radix-ui/react-dialog'
 import { FaRegUser } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import logoImg from '../../assets/logo.svg'
 import { ButtonSearch } from '../../pages/transactions/layout/components/SerchForm/styles'
 import { NewTransactionsModal } from '../NewTransactionsModal'
 import { ModalUser } from '../User'
 
 export function Header() {
+  const navigate = useNavigate()
+  const handleReport = () => {
+    navigate('/Relatorios')
+  }
   return (
     <HeaderContainer>
       <HeaderContent>
@@ -27,9 +31,7 @@ export function Header() {
             </Dialog.Trigger>
             <NewTransactionsModal />
           </Dialog.Root>
-          <ButtonSearch>
-            <Link to="/Relatorios">Relatorio</Link>
-          </ButtonSearch>
+          <ButtonSearch onClick={handleReport}>Relatorio</ButtonSearch>
           <Dialog.Root>
             <Dialog.Trigger asChild>
               <ButtonSearch>

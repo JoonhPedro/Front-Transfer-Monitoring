@@ -9,7 +9,7 @@ export const SeachFormContainer = styled.form`
     flex: 2;
     border-radius: 6px;
     border: 0;
-    background: ${(props) => props.theme['gray-900']};
+    background: ${(props) => props.theme['gray-800']};
     color: ${(props) => props.theme['gray-300']};
     padding: 1rem;
 
